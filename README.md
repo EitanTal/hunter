@@ -48,3 +48,9 @@ some additional activity in:
 609MHz
 914MHz
 1218MHz
+
+## Links
+
+<https://www.circuit-diagram.org/editor/c/8aa76d7eb7214562b758d9756eb3f021>
+
+<https://everycircuit.com/circuit/5273046325395456>
