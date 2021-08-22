@@ -51,7 +51,7 @@ some additional activity in:
 
 ### Circuit analysis
 
-I measured all the testpoints with a power supply of about 8.4V. I then measured the phase difference between points of interest. Reference phase is the XXXX testpoint, with a phase of zero.
+I measured all the testpoints with a power supply of 8.26V. I then measured the phase difference between points of interest. Reference phase is the XXXX testpoint, with a phase of zero.
 
 #### Common
 Entire duration of the transmission is ~12.5ms. Digital_OUT.png shows the waveform. It's a push-pull active-high spanning 0...9V
@@ -59,6 +59,8 @@ Entire duration of the transmission is ~12.5ms. Digital_OUT.png shows the wavefo
 Below are measurements for various testpoints, as seen in waveforms/circuit.png
 
 Each testpoint is defined `active` when the AC component (300MHz) is present. The phase and amplitude varies by the testpoint, and so is the DC level. It's active low when the AC is present while at the lower voltage, and vice versa.
+
+a single cycle lenth of 300MHZ is approx 3380ps.
 
 #### Point Base:
 | what                 |  mV     |
@@ -100,7 +102,7 @@ This one is interesting: It is active-lo, and so are the testpoints that lead to
 | peak2peak AC noise:  |  60?    |
 | Rise time:           |  100ns  |
 | Fall time:           |  300ns  |
-| Phase:               |  ?      |
+| Phase:               |  30?    |
 
 #### Point 1:
 | what                 |  mV     |
@@ -112,7 +114,7 @@ This one is interesting: It is active-lo, and so are the testpoints that lead to
 | peak2peak AC noise:  |  30     |
 | Rise time:           |  20ns   |
 | Fall time:           |  200ns  |
-| Phase:               |  ?      |
+| Phase:               |  0      |
 
 #### Point 2:
 | what                 |  mV     |
@@ -124,7 +126,7 @@ This one is interesting: It is active-lo, and so are the testpoints that lead to
 | peak2peak AC noise:  |  30     |
 | Rise time:           |  120ns  |
 | Fall time:           |  200ns  |
-| Phase:               |  ?      |
+| Phase:               |  180    |
 
 #### Point diode:
 This point is interesting. It's much different than the connected point E. (Emitter)
@@ -138,7 +140,7 @@ This point is interesting. It's much different than the connected point E. (Emit
 | peak2peak AC noise:  |  15     |
 | Rise time:           |  120ns  |
 | Fall time:           |  200ns  |
-| Phase:               |  ?      |
+| Phase:               |  -80    |
 
 ## Links
 
