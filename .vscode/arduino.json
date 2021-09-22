@@ -2,5 +2,5 @@
     "board": "arduino:avr:uno",
     "programmer": "arduino:avrisp",
     "port": "COM3",
-    "sketch": "cc1101-ook-final.ino"
+    "sketch": "hunter.ino"
 }
