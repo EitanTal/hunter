@@ -29,7 +29,7 @@ static int tx_bit_offset = 0;
 
 //////////////////////////////////////////////////////
 
-void send_data(uint8_t* le_data, int loops);
+void cc_send_data(uint8_t* le_data, int loops);
 
 ////////////////////////////////////////////////////////
 
@@ -123,12 +123,11 @@ void loop()
     digitalWrite(LED_ACTIVITY, HIGH);
 #endif
     //delay(200); // ! replace with a loop to transmit the code for long enough time.
-    send_data(tx_buf, 100);
+    cc_send_data(tx_buf, 100);
   }
 }
 
 /////////////////////////////////////////////
-
 
 CC1101 cc1101;
 
@@ -173,15 +172,12 @@ void cc_setup()
     Serial.println("device initialized");
 }
 
-void send_data(uint8_t* le_data, int loops)
+void cc_send_data(uint8_t* le_data, int loops)
 {
     CCPACKET data;
-
     data.length = 5;
-    uint8_t known_good_data[] = {0b00101101, 0b10110110, 0b01001011, 0b00100100, 0b10010010};
-
     memset(data.data, 0, sizeof(data.data));
-    memcpy(data.data, known_good_data, sizeof(data.length));
+    memcpy(data.data, le_data, data.length);
 
     for (int i = 0; i < loops; i++)
     {
