@@ -1,49 +1,59 @@
+#include <Arduino.h>
+//#include "LowPower.h"
+//#define USE_SERIAL
+#include "CC1101.h"
 
-// the sensor communicates using SPI, so include the library:
-#include <SPI.h>
-#include <stdint.h>
-
-// pins used for the connection with the sensor
-// the other you need are controlled by the SPI library):
-const int dataReadyPin = 6;
-const int chipSelectPin = 7;
-
-int led = 13;
-
-void setup() {
-//  Serial.begin(9600);
-
-  // start the SPI library:
-//  SPI.begin();
-  
-//  SPI.setClockDivider(SPI_CLOCK_DIV128);
-
-  // initalize the  data ready and chip select pins:
-//  pinMode(dataReadyPin, INPUT);
-//  pinMode(chipSelectPin, OUTPUT);
-  pinMode(led, OUTPUT);
-
-  // give the sensor time to set up:
-  delay(100);
-}
-#if 0
-void my_tx(int a)
+enum 
 {
-  static const uint8_t triplet_lo[16] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-  static const uint8_t triplet_hi[16]  = {0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+  BUTTON_1 = 4,
+  BUTTON_2 = 5,
+  BUTTON_3 = 6,
+  BUTTON_4 = 8,
+  BUTTON_5 = 9,
+  BUTTON_6 = PIN_A0,
+  LED_ACTIVITY = 7
+};
 
-  if (a == 0)
-  {
-    for (int i = 0; i < sizeof(triplet_lo); i++)
-      SPI.transfer(triplet_lo[i]);
-  }
-  else
-  {
-    for (int i = 0; i < sizeof(triplet_hi); i++)
-      SPI.transfer(triplet_hi[i]);
-  }
+enum
+{
+  LIGHT       = 0b00000001,
+  FAN_OFF     = 0b00000010,
+  FAN_REVERSE = 0b00000100,
+  FAN_3       = 0b00001000,
+  FAN_2       = 0b00010000,
+  FAN_1       = 0b00100000,
+};
+
+uint64_t tx_out = 0;
+static int tx_bit_offset = 0;
+
+//////////////////////////////////////////////////////
+
+void cc_send_data(uint8_t* le_data, int loops);
+
+////////////////////////////////////////////////////////
+
+void setup() 
+{
+#ifdef USE_SERIAL
+  Serial.begin(9600);
+#endif
+  pinMode(LED_ACTIVITY, OUTPUT);
+  pinMode(BUTTON_1, INPUT);
+  pinMode(BUTTON_2, INPUT);
+  pinMode(BUTTON_3, INPUT);
+  pinMode(BUTTON_4, INPUT);
+  pinMode(BUTTON_5, INPUT);
+  pinMode(BUTTON_6, INPUT);
+  digitalWrite(BUTTON_1, HIGH);
+  digitalWrite(BUTTON_2, HIGH);
+  digitalWrite(BUTTON_3, HIGH);
+  digitalWrite(BUTTON_4, HIGH);
+  digitalWrite(BUTTON_5, HIGH);
+  digitalWrite(BUTTON_6, HIGH);
+
+  cc_setup();
 }
-#else
 
 void my_tx(uint8_t a, int bits)
 {
@@ -55,46 +65,140 @@ void my_tx(uint8_t a, int bits)
   }
 }
 
-#if 1
-#define MY_HIGH LOW
-#define MY_LOW HIGH
-#else
-#define MY_HIGH HIGH
-#define MY_LOW LOW
-#endif
-
-void my_tx_bit(int a)
+void my_tx_bit(uint8_t a)
 {
-  enum { UNIT_LEN_US = 323 };
-//  enum { UNIT_LEN_US = 1000 };
-
-  digitalWrite(led, MY_LOW);
-  if (a == 0)
-  {
-    delayMicroseconds(UNIT_LEN_US);
-    delayMicroseconds(UNIT_LEN_US);
-    digitalWrite(led, MY_HIGH);
-    delayMicroseconds(UNIT_LEN_US);
-  }
-  else
-  {
-    delayMicroseconds(UNIT_LEN_US);
-    digitalWrite(led, MY_HIGH);
-    delayMicroseconds(UNIT_LEN_US);
-    delayMicroseconds(UNIT_LEN_US);
-  }
-  digitalWrite(led, MY_LOW);
+  uint64_t tmp = (a ? 0b110 : 0b100);  // ! These are Mirrored.
+  tmp = tmp << tx_bit_offset;
+  tx_bit_offset += 3;
+  tx_out |= tmp;
 }
-#endif
+
+uint8_t mirror(uint8_t a)
+{
+  uint8_t result = 0;
+  for (int i = 0; i < 8; i++)
+  {
+    result |= (!!(a & 0x80)) << i;
+    a = a << 1;
+  }
+  return result;
+}
 
 void loop() 
 {
+  tx_out = 0;
+  tx_bit_offset = 0;
+  int action = 0;
+
+  digitalWrite(LED_ACTIVITY, LOW);
+  delay(10); // ! replace with low-power
+
+  if (digitalRead(BUTTON_1) == LOW) action = LIGHT; 
+  if (digitalRead(BUTTON_2) == LOW) action = FAN_OFF;
+  if (digitalRead(BUTTON_3) == LOW) action = FAN_REVERSE;
+  if (digitalRead(BUTTON_4) == LOW) action = FAN_3;
+  if (digitalRead(BUTTON_5) == LOW) action = FAN_2;
+  if (digitalRead(BUTTON_6) == LOW) action = FAN_1;
+
+  if (action != 0)
+  {
     my_tx(0x0F, 5);
-    my_tx(0x20, 8);
-    
-    delay(10);
-    
-   Serial.print("Temp[C]=\n");
+    my_tx(action, 8);
+
+    char out_text[8] = {0};
+
+    uint8_t * tx_buf = (uint8_t*)&tx_out;
+    for(int i = 0; i < 5; i++)
+    {
+      tx_buf[i] = mirror(tx_buf[i]);
+    }
+#ifdef USE_SERIAL
+    for(int i = 0; i < 5; i++)
+    {
+      sprintf(out_text, "0x%02X ", tx_buf[i]);
+      Serial.print(out_text);
+    }
+    Serial.print("\n");
+#else
+    digitalWrite(LED_ACTIVITY, HIGH);
+#endif
+    //delay(200); // ! replace with a loop to transmit the code for long enough time.
+    cc_send_data(tx_buf, 100);
+  }
 }
 
+/////////////////////////////////////////////
 
+CC1101 cc1101;
+
+#define LEDOUTPUT 7
+
+void blinker()
+{
+    static int i = 0;
+    digitalWrite(LEDOUTPUT, i ? HIGH : LOW);
+    i = !i;
+}
+
+void cc_setup()
+{
+    Serial.begin(9600);
+    Serial.println("Starting CC1101...");
+
+    // blink once to signal the setup
+    blinker();
+
+    Serial.println("Initialize and set registers.");
+
+    cc1101.init();
+
+    Serial.println("Setting PA_TABLE.");
+    config2();
+
+    uint8_t syncWord[] = {0x55, 0x55};
+    cc1101.setSyncWord(syncWord, false);
+    cc1101.setCarrierFreq(CFREQ_302);
+    cc1101.disableAddressCheck();
+
+    delay(1000);
+
+    Serial.print("CC1101_PARTNUM ");
+    Serial.println(cc1101.readReg(CC1101_PARTNUM, CC1101_STATUS_REGISTER));
+    Serial.print("CC1101_VERSION ");
+    Serial.println(cc1101.readReg(CC1101_VERSION, CC1101_STATUS_REGISTER));
+    Serial.print("CC1101_MARCSTATE ");
+    Serial.println(cc1101.readReg(CC1101_MARCSTATE, CC1101_STATUS_REGISTER) & 0x1f);
+
+    Serial.println("device initialized");
+}
+
+void cc_send_data(uint8_t* le_data, int loops)
+{
+    CCPACKET data;
+    data.length = 5;
+    memset(data.data, 0, sizeof(data.data));
+    memcpy(data.data, le_data, data.length);
+
+    for (int i = 0; i < loops; i++)
+    {
+      blinker();
+      if (!cc1101.sendData(data))
+      {
+          Serial.println("sent failed :(");
+      }
+      delay(10);
+    }
+}
+
+void config2()
+{
+    enum
+    {
+        PA_POWER_MINUS_0  = 0x51,
+        PA_POWER_MINUS_15 = 0x1D,
+        PA_POWER_MINUS_30 = 0x03,
+        PA_POWER_ORIGINAL = 0xC0,
+    };
+    uint8_t PA_TABLE[] = {0x00, PA_POWER_MINUS_0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+    cc1101.writeBurstReg(CC1101_PATABLE, PA_TABLE, 8);
+}
