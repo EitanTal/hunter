@@ -1,5 +1,6 @@
 #include <Arduino.h>
 //#include "LowPower.h"
+//#define USE_SERIAL
 
 enum 
 {
@@ -27,8 +28,9 @@ static int tx_bit_offset = 0;
 
 void setup() 
 {
+#ifdef USE_SERIAL
   Serial.begin(9600);
-
+#endif
   pinMode(LED_ACTIVITY, OUTPUT);
   pinMode(BUTTON_1, INPUT);
   pinMode(BUTTON_2, INPUT);
@@ -79,6 +81,7 @@ void loop()
   tx_bit_offset = 0;
   int action = 0;
 
+  digitalWrite(LED_ACTIVITY, LOW);
   delay(10); // ! replace with low-power
 
   if (digitalRead(BUTTON_1) == LOW) action = LIGHT; 
@@ -98,11 +101,18 @@ void loop()
     uint8_t * tx_buf = (uint8_t*)&tx_out;
     for(int i = 0; i < 5; i++)
     {
-      sprintf(out_text, "0x%02X ", mirror(tx_buf[i]));
+      tx_buf[i] = mirror(tx_buf[i]);
+    }
+#ifdef USE_SERIAL
+    for(int i = 0; i < 5; i++)
+    {
+      sprintf(out_text, "0x%02X ", tx_buf[i]);
       Serial.print(out_text);
     }
     Serial.print("\n");
-
+#else
+    digitalWrite(LED_ACTIVITY, HIGH);
+#endif
     delay(200); // ! replace with a loop to transmit the code for long enough time.
   }
 }
