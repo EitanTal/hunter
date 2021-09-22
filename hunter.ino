@@ -1,5 +1,26 @@
 #include <Arduino.h>
-#define LED_ACTIVITY 7
+//#include "LowPower.h"
+
+enum 
+{
+  BUTTON_1 = 4,
+  BUTTON_2 = 5,
+  BUTTON_3 = 6,
+  BUTTON_4 = 8,
+  BUTTON_5 = 9,
+  BUTTON_6 = PIN_A0,
+  LED_ACTIVITY = 7
+};
+
+enum
+{
+  LIGHT       = 0b00000001,
+  FAN_OFF     = 0b00000010,
+  FAN_REVERSE = 0b00000100,
+  FAN_3       = 0b00001000,
+  FAN_2       = 0b00010000,
+  FAN_1       = 0b00100000,
+};
 
 uint64_t tx_out = 0;
 static int tx_bit_offset = 0;
@@ -9,6 +30,18 @@ void setup()
   Serial.begin(9600);
 
   pinMode(LED_ACTIVITY, OUTPUT);
+  pinMode(BUTTON_1, INPUT);
+  pinMode(BUTTON_2, INPUT);
+  pinMode(BUTTON_3, INPUT);
+  pinMode(BUTTON_4, INPUT);
+  pinMode(BUTTON_5, INPUT);
+  pinMode(BUTTON_6, INPUT);
+  digitalWrite(BUTTON_1, HIGH);
+  digitalWrite(BUTTON_2, HIGH);
+  digitalWrite(BUTTON_3, HIGH);
+  digitalWrite(BUTTON_4, HIGH);
+  digitalWrite(BUTTON_5, HIGH);
+  digitalWrite(BUTTON_6, HIGH);
 }
 
 void my_tx(uint8_t a, int bits)
@@ -44,17 +77,32 @@ void loop()
 {
   tx_out = 0;
   tx_bit_offset = 0;
-  my_tx(0x0F, 5);
-  my_tx(0x20, 8);
+  int action = 0;
 
-  delay(10);
-  char out_text[8] = {0};
+  delay(10); // ! replace with low-power
 
-  uint8_t * tx_buf = (uint8_t*)&tx_out;
-  for(int i = 0; i < 5; i++)
+  if (digitalRead(BUTTON_1) == LOW) action = LIGHT; 
+  if (digitalRead(BUTTON_2) == LOW) action = FAN_OFF;
+  if (digitalRead(BUTTON_3) == LOW) action = FAN_REVERSE;
+  if (digitalRead(BUTTON_4) == LOW) action = FAN_3;
+  if (digitalRead(BUTTON_5) == LOW) action = FAN_2;
+  if (digitalRead(BUTTON_6) == LOW) action = FAN_1;
+
+  if (action != 0)
   {
-    sprintf(out_text, "0x%02X ", mirror(tx_buf[i]));
-    Serial.print(out_text);
+    my_tx(0x0F, 5);
+    my_tx(action, 8);
+
+    char out_text[8] = {0};
+
+    uint8_t * tx_buf = (uint8_t*)&tx_out;
+    for(int i = 0; i < 5; i++)
+    {
+      sprintf(out_text, "0x%02X ", mirror(tx_buf[i]));
+      Serial.print(out_text);
+    }
+    Serial.print("\n");
+
+    delay(200); // ! replace with a loop to transmit the code for long enough time.
   }
-  Serial.print("\n");
 }
