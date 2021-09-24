@@ -39,109 +39,56 @@ every 1 bit = 8us.
 41 bits = one unit.
 ~16 bytes per triplet.
 
+This equals a baudrate of 3045
+
+The bit burst must repeat 16 times.
+There must be exactly 10ms gap between each bit burst.
+
 ## Radio notes
 
-significant wide band activity in:
-304MHz
+### Carrier
 
-some additional activity in:
-609MHz
-914MHz
-1218MHz
+The chosen carrier is 302MHz. The original remote is inconsistent on its carrier wave, ranging from 300 to 305.
 
-### Circuit analysis
+### Modulation
 
-I measured all the testpoints with a power supply of about 8.4V. I then measured the phase difference between points of interest. Reference phase is the XXXX testpoint, with a phase of zero.
+On-off-keying modulation is used. (AM)
 
-#### Common
-Entire duration of the transmission is ~12.5ms. Digital_OUT.png shows the waveform. It's a push-pull active-high spanning 0...9V
+### RF backend
 
-Below are measurements for various testpoints, as seen in waveforms/circuit.png
+This implementation utilizes TI CC1101 as the RF backend. The original hunter remote presumably used a ferrite core antenna. More details are available in eariler revisions.
 
-Each testpoint is defined `active` when the AC component (300MHz) is present. The phase and amplitude varies by the testpoint, and so is the DC level. It's active low when the AC is present while at the lower voltage, and vice versa.
+As an antenna, a 30cm wire is used.
 
-#### Point Base:
-| what                 |  mV     |
-| -                    |   -     |
-| Volt low:            |   0     |
-| Volt High:           |   3140  |
-| Active on:           |   Hi    |
-| peak2peak AC active: |   160   |
-| peak2peak AC noise:  |   10    |
-| Rise time:           |   --    |
-| Fall time:           |   6us   |
-| Phase:               |   ?     |
+For power, 0db is currently used
 
-#### Point Emitter:
-The emitter behavior is strange: Its falloff time is exremely slow, as seen in emitter_all.png.
-Also, it has a 200mv spike every ~50us.
-Oscillations decay after about 20ns, but the voltage falltime is very long.
+## Breadboard notes
 
-| what                 |  mV     |
-| -                    |   -     |
-| Volt low:            |  0      |
-| Volt High:           |  2400   |
-| Active on:           |  Hi     |
-| peak2peak AC active: |  140    |
-| peak2peak AC noise:  |  10     |
-| Rise time:           |  200ns  |
-| Fall time:           |  long   |
-| Phase:               |  ?      |
+CC1101 operates on 3v3 max. Resistor divider used on Arduino -> CC1101
 
-#### Point Collector:
-This one is interesting: It is active-lo, and so are the testpoints that lead to it.
+Relevant pins on the pinheader of the eval board of CC1101:
+| Color   | Pin   |  |   Pin  | Color   |
+|---------|-------|--|--------|---------|
+|  Brown  | VCC   |  | VCC    | Red     |
+|  Orange | SCK   |  | MOSI   | Yellow  |
+|  Green  | ND?   |  | MISO   | Blue    |
+|  Purple | GDO0  |  | CSN    | Grey    |
+|  White  | GND   |  | GND    | Black   |
 
-| what                 |  mV     |
-| -                    |   -     |
-| Volt low:            |  7000   |
-| Volt High:           |  8320   |
-| Active on:           |  Lo     |
-| peak2peak AC active: |  224    |
-| peak2peak AC noise:  |  60?    |
-| Rise time:           |  100ns  |
-| Fall time:           |  300ns  |
-| Phase:               |  ?      |
 
-#### Point 1:
-| what                 |  mV     |
-| -                    |   -     |
-| Volt low:            |  7170   |
-| Volt High:           |  8330   |
-| Active on:           |  Lo     |
-| peak2peak AC active: |  150    |
-| peak2peak AC noise:  |  30     |
-| Rise time:           |  20ns   |
-| Fall time:           |  200ns  |
-| Phase:               |  ?      |
+The pins as they connect to my breadboard:
+| Color   | Pin   |  |   Pin  | Color   |
+|---------|-------|--|--------|---------|
+| (Black) |GND    |  |    VCC |   (Red) |
+| (Blue)  |MISO   |  |   MOSI |(Yellow) |
+| (Orange)|SCK    |  |    CSN |  (Grey) |
+|         |       |  |   GDO0 |(Purple) |
 
-#### Point 2:
-| what                 |  mV     |
-| -                    |   -     |
-| Volt low:            |  7170   |
-| Volt High:           |  8330   |
-| Active on:           |  Lo     |
-| peak2peak AC active: |  270    |
-| peak2peak AC noise:  |  30     |
-| Rise time:           |  120ns  |
-| Fall time:           |  200ns  |
-| Phase:               |  ?      |
-
-#### Point diode:
-This point is interesting. It's much different than the connected point E. (Emitter)
-
-| what                 |  mV     |
-| -                    |   -     |
-| Volt low:            |  0      |
-| Volt High:           |  530    |
-| Active on:           |  Hi     |
-| peak2peak AC active: |  125    |
-| peak2peak AC noise:  |  15     |
-| Rise time:           |  120ns  |
-| Fall time:           |  200ns  |
-| Phase:               |  ?      |
-
-## Links
-
-<https://www.circuit-diagram.org/editor/c/8aa76d7eb7214562b758d9756eb3f021>
-
-<https://everycircuit.com/circuit/5273046325395456>
+Relevant pins on the arduino:
+|Number|Function|Comment|
+|------|--------|-------|
+|10    | SS     | (Active low)            |
+|11    | MOSI   |                         |
+|12    | MISO   |                         |
+|13    | SCLK   |                         |
+|2     | GDO0   | (Interrupt line 0, PD2) |
