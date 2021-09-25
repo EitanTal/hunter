@@ -27,7 +27,6 @@
 
 #include "Arduino.h"
 #include "spi.h"
-#include "ccpacket.h"
 
 /**
  * Carrier frequencies
@@ -486,17 +485,8 @@ class CC1101
      *    True if the transmission succeeds
      *    False otherwise
      */
-    boolean sendData(CCPACKET packet);
+    boolean sendData(uint8_t* packet, uint8_t len);
 
-    /**
-     * receiveData
-     * 
-     * Read data packet from RX FIFO
-     * 
-     * Return:
-     * 	Amount of bytes received
-     */
-    uint8_t receiveData(CCPACKET *packet);
 };
 
 #endif

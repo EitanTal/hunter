@@ -23,7 +23,6 @@
  */
 
 #include "cc1101.h"
-#include "nvolat.h"
 
 /**
  * Macros
@@ -193,7 +192,7 @@ void CC1101::reset(void)
   cc1101_Deselect();                    // Deselect CC1101
 
   setDefaultRegs();                     // Reconfigure CC1101
-  setRegsFromEeprom();                  // Take user settings from EEPROM
+  
 }
 
 /**
@@ -305,12 +304,6 @@ void CC1101::setSyncWord(uint8_t syncH, uint8_t syncL, bool save)
     writeReg(CC1101_SYNC0, syncL);
     syncWord[0] = syncH;
     syncWord[1] = syncL;
-    // Save in EEPROM
-    if (save)
-    {
-      EEPROM.write(EEPROM_SYNC_WORD, syncH);
-      EEPROM.write(EEPROM_SYNC_WORD + 1, syncL);
-    }
   }
 }
 
@@ -341,9 +334,6 @@ void CC1101::setDevAddress(uint8_t addr, bool save)
   {
     writeReg(CC1101_ADDR, addr);
     devAddress = addr;
-    // Save in EEPROM
-    if (save)
-      EEPROM.write(EEPROM_DEVICE_ADDR, addr);  
   }
 }
 
@@ -361,9 +351,6 @@ void CC1101::setChannel(uint8_t chnl, bool save)
   {
     writeReg(CC1101_CHANNR,  chnl);
     channel = chnl;
-    // Save in EEPROM
-    if (save)
-      EEPROM.write(EEPROM_FREQ_CHANNEL, chnl);
   }
 }
 
@@ -413,33 +400,6 @@ void CC1101::setCarrierFreq(uint8_t freq)
   carrierFreq = freq;  
 }
 
-/**
- * setRegsFromEeprom
- * 
- * Set registers from EEPROM
- */
-void CC1101::setRegsFromEeprom(void)
-{
-  uint8_t bVal;
-  uint8_t arrV[2];
-
-  // Read RF channel from EEPROM
-  bVal = EEPROM.read(EEPROM_FREQ_CHANNEL);
-  // Set RF channel
-  if (bVal < NUMBER_OF_FCHANNELS )
-    setChannel(bVal, false);
-  // Read Sync word from EEPROM
-  arrV[0] = EEPROM.read(EEPROM_SYNC_WORD);
-  arrV[1] = EEPROM.read(EEPROM_SYNC_WORD + 1);
-  // Set Sync word. 0x00 and 0xFF values are not allowed
-  if (((arrV[0] != 0x00) && (arrV[0] != 0xFF)) || ((arrV[1] != 0x00) && (arrV[1] != 0xFF)))
-    setSyncWord(arrV[0], arrV[1], false);
-  // Read device address from EEPROM
-  bVal = EEPROM.read(EEPROM_DEVICE_ADDR);
-  // Set device address
-  if (bVal > 0)
-    setDevAddress(bVal, false);
-}
 
 /**
  * setPowerDownState
@@ -465,7 +425,7 @@ void CC1101::setPowerDownState()
  *    True if the transmission succeeds
  *    False otherwise
  */
-boolean CC1101::sendData(CCPACKET packet)
+boolean CC1101::sendData(uint8_t* packet, uint8_t len)
 {
   uint8_t marcState;
   bool res = false;
@@ -489,7 +449,7 @@ boolean CC1101::sendData(CCPACKET packet)
   // Set data length at the first position of the TX FIFO
   // writeReg(CC1101_TXFIFO,  packet.length);
   // Write data into the TX FIFO
-  writeBurstReg(CC1101_TXFIFO, packet.data, packet.length);
+  writeBurstReg(CC1101_TXFIFO, packet, len);
 
   // CCA enabled: will enter TX state only if the channel is clear
   setTxState();
@@ -528,52 +488,3 @@ boolean CC1101::sendData(CCPACKET packet)
 
   return res;
 }
-
-/**
- * receiveData
- * 
- * Read data packet from RX FIFO
- *
- * 'packet'	Container for the packet received
- * 
- * Return:
- * 	Amount of bytes received
- */
-uint8_t CC1101::receiveData(CCPACKET * packet)
-{
-  uint8_t val;
-  uint8_t rxBytes = readStatusReg(CC1101_RXBYTES);
-
-  // Any byte waiting to be read and no overflow?
-  if (rxBytes & 0x7F && !(rxBytes & 0x80))
-  {
-    // Read data length
-    packet->length = readConfigReg(CC1101_RXFIFO);
-    // If packet is too long
-    if (packet->length > CC1101_DATA_LEN)
-      packet->length = 0;   // Discard packet
-    else
-    {
-      // Read data packet
-      readBurstReg(packet->data, CC1101_RXFIFO, packet->length);
-      // Read RSSI
-      packet->rssi = readConfigReg(CC1101_RXFIFO);
-      // Read LQI and CRC_OK
-      val = readConfigReg(CC1101_RXFIFO);
-      packet->lqi = val & 0x7F;
-      packet->crc_ok = bitRead(val, 7);
-    }
-  }
-  else
-    packet->length = 0;
-
-  setIdleState();       // Enter IDLE state
-  flushRxFifo();        // Flush Rx FIFO
-  //cmdStrobe(CC1101_SCAL);
-
-  // Back to RX state
-  setRxState();
-
-  return packet->length;
-}
-

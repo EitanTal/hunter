@@ -130,15 +130,14 @@ void cc_setup()
 
 void cc_send_data(uint8_t *le_data, int loops)
 {
-  CCPACKET data;
-  data.length = SIZEOF_HUNTER_DATA_BUFFER;
-  memset(data.data, 0, sizeof(data.data));
-  memcpy(data.data, le_data, data.length);
+  uint8_t data[SIZEOF_HUNTER_DATA_BUFFER];
+
+  memcpy(data, le_data, sizeof(data));
 
   for (int i = 0; i < loops; i++)
   {
     blinker();
-    if (!cc1101.sendData(data))
+    if (!cc1101.sendData(data, SIZEOF_HUNTER_DATA_BUFFER))
     {
 #ifdef USE_SERIAL
       Serial.println("sent failed :(");
