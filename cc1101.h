@@ -352,53 +352,6 @@ class CC1101
     void init(void);
 
     /**
-     * setSyncWord
-     * 
-     * Set synchronization word
-     * 
-     * 'syncH'	Synchronization word - High byte
-     * 'syncL'	Synchronization word - Low byte
-     * 'save' If TRUE, save parameter in EEPROM
-     */
-    void setSyncWord(uint8_t syncH, uint8_t syncL, bool save=true);
-
-    /**
-     * setSyncWord (overriding method)
-     * 
-     * Set synchronization word
-     * 
-     * 'syncH'	Synchronization word - pointer to 2-byte array
-     * 'save' If TRUE, save parameter in EEPROM
-     */
-    void setSyncWord(uint8_t *sync, bool save=true);
-
-    /**
-     * setCarrierFreq
-     * 
-     * Set carrier frequency
-     * 
-     * 'freq'	New carrier frequency
-     */
-    void setCarrierFreq(uint8_t freq);
-    
-    /**
-     * setChannel
-     * 
-     * Set frequency channel
-     * 
-     * 'chnl'	Frequency channel
-     * 'save' If TRUE, save parameter in EEPROM
-     */
-    void setChannel(uint8_t chnl, bool save=true);
-
-    /**
-     * setPowerDownState
-     * 
-     * Put CC1101 into power-down state
-     */
-    void setPowerDownState();
-    
-    /**
      * sendData
      * 
      * Send data packet via RF
@@ -409,7 +362,7 @@ class CC1101
      *    True if the transmission succeeds
      *    False otherwise
      */
-    boolean sendData(uint8_t* packet, uint8_t len);
+    bool sendData(uint8_t* packet, uint8_t len);
 
 };
 

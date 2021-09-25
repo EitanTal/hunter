@@ -135,9 +135,12 @@ void CC1101::setDefaultRegs(void)
   writeReg(CC1101_PKTLEN,  CC1101_DEFVAL_PKTLEN);
   writeReg(CC1101_PKTCTRL1,  CC1101_DEFVAL_PKTCTRL1);
   writeReg(CC1101_PKTCTRL0,  CC1101_DEFVAL_PKTCTRL0);
-  setSyncWord(CC1101_DEFVAL_SYNC1, CC1101_DEFVAL_SYNC0, false); // Set default synchronization word
+  //writeReg(CC1101_SYNC1, CC1101_DEFVAL_SYNC1); // Set default synchronization word
+  //writeReg(CC1101_SYNC0, CC1101_DEFVAL_SYNC0);
+  writeReg(CC1101_SYNC1, 0x55); // Custom SYNC word
+  writeReg(CC1101_SYNC0, 0x55);
   writeReg(CC1101_ADDR, CC1101_DEFVAL_ADDR); // Set default device address
-  setChannel(CC1101_DEFVAL_CHANNR, false); // Set default frequency channel
+  writeReg(CC1101_CHANNR,  CC1101_DEFVAL_CHANNR); // Set default frequency channel
 	writeReg(CC1101_CHANNR,  CC1101_DEFVAL_CHANNR);
 	writeReg(CC1101_ADDR,  CC1101_DEFVAL_ADDR);
   writeReg(CC1101_FSCTRL1,  CC1101_DEFVAL_FSCTRL1);
@@ -217,84 +220,7 @@ void CC1101::init(void)
   uint8_t PA_TABLE[] = {0x00, PA_POWER_MINUS_0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
   writeBurstReg(CC1101_PATABLE, PA_TABLE, 8);
 
-  uint8_t syncWord[] = {0x55, 0x55};
-  setSyncWord(syncWord, false);
   disableAddressCheck();
-}
-
-/**
- * setSyncWord
- * 
- * Set synchronization word
- * 
- * 'syncH'	Synchronization word - High byte
- * 'syncL'	Synchronization word - Low byte
- * 'save' If TRUE, save parameter in EEPROM
- */
-void CC1101::setSyncWord(uint8_t syncH, uint8_t syncL, bool save) 
-{
-  if ((syncWord[0] != syncH) || (syncWord[1] != syncL))
-  {
-    writeReg(CC1101_SYNC1, syncH);
-    writeReg(CC1101_SYNC0, syncL);
-    syncWord[0] = syncH;
-    syncWord[1] = syncL;
-  }
-}
-
-/**
- * setSyncWord (overriding method)
- * 
- * Set synchronization word
- * 
- * 'syncH'	Synchronization word - pointer to 2-byte array
- * 'save' If TRUE, save parameter in EEPROM
- */
-void CC1101::setSyncWord(uint8_t *sync, bool save) 
-{
-  CC1101::setSyncWord(sync[0], sync[1], save);
-}
-
-/**
- * setChannel
- * 
- * Set frequency channel
- * 
- * 'chnl'	Frequency channel
- * 'save' If TRUE, save parameter in EEPROM
- */
-void CC1101::setChannel(uint8_t chnl, bool save) 
-{
-  if (channel != chnl)
-  {
-    writeReg(CC1101_CHANNR,  chnl);
-    channel = chnl;
-  }
-}
-
-/**
- * setCarrierFreq
- * 
- * Set carrier frequency
- * 
- * 'freq'	New carrier frequency
- */
-void CC1101::setCarrierFreq(uint8_t freq)
-{
-}
-
-
-/**
- * setPowerDownState
- * 
- * Put CC1101 into power-down state
- */
-void CC1101::setPowerDownState() 
-{
-  // Comming from RX state, we need to enter the IDLE state first
-  cmdStrobe(CC1101_SIDLE);
-  // Enter Power-down state
-  cmdStrobe(CC1101_SPWD);
 }
 
 /**
@@ -308,7 +234,7 @@ void CC1101::setPowerDownState()
  *    True if the transmission succeeds
  *    False otherwise
  */
-boolean CC1101::sendData(uint8_t* packet, uint8_t len)
+bool CC1101::sendData(uint8_t* packet, uint8_t len)
 {
   uint8_t marcState;
   bool res = false;
