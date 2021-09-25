@@ -8,6 +8,11 @@ void digitalWrite(int pin, int val)
 
 }
 
+int digitalRead(int port_and_pin)
+{
+
+}
+
 void bitClear(int port, int pin)
 {
 

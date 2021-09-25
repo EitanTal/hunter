@@ -1,14 +1,18 @@
 #pragma once
 
-enum
+enum // ! Arduino
 {
     INPUT,
-    OUTPUT
+    OUTPUT,
+    HIGH,
+    LOW
 };
 
 void pinMode(int pin, int val);
 
 void digitalWrite(int pin, int val);
+
+int digitalRead(int port_and_pin);
 
 void bitClear(int port, int pin);
 

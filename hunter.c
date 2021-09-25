@@ -1,6 +1,8 @@
-#include <Arduino.h>
 #include "CC1101.h"
 #include "hunter_data.h"
+#include "main.h"
+#include "io.h"
+#include "time.h"
 
 enum
 {
@@ -51,13 +53,15 @@ void loop()
 
   if (action != 0)
   {
+		uint8_t *tx_buf;
+		int i;
     hunter_data_clear();
     hunter_data_add_bits(0x0F, 5);
     hunter_data_add_bits(action, 8);
-    uint8_t *tx_buf = hunter_data_get_buffer();
+    tx_buf = hunter_data_get_buffer();
 
     digitalWrite(LED_ACTIVITY, HIGH);
-    for (int i = 0; i < 16; i++)
+    for (i = 0; i < 16; i++)
     {
       digitalWrite(LED_ACTIVITY, ((i%2) ? HIGH : LOW));
       cc1101_sendData(tx_buf, SIZEOF_HUNTER_DATA_BUFFER);

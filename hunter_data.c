@@ -11,7 +11,7 @@ static uint8_t mirror(uint8_t a);
 
 /////////////////////////////////////////////////////////////
 
-void hunter_data_clear()
+void hunter_data_clear(void)
 {
   tx_out = 0;
   tx_bit_offset = 0;
@@ -28,7 +28,7 @@ void hunter_data_add_bits(uint8_t a, int bits)
   }
 }
 
-uint8_t* hunter_data_get_buffer()
+uint8_t* hunter_data_get_buffer(void)
 {
   uint8_t * tx_buf = (uint8_t*)&tx_out;
 
