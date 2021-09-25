@@ -232,19 +232,19 @@ enum
 // Read CC1101 Config register
 #define readConfigReg(regAddr)    readReg(regAddr, CC1101_CONFIG_REGISTER)
 // Read CC1101 Status register
-#define readStatusReg(regAddr)    readReg(regAddr, CC1101_STATUS_REGISTER)
+#define cc1101_readStatusReg(regAddr)    cc1101_readReg(regAddr, CC1101_STATUS_REGISTER)
 // Enter Rx state
-#define setRxState()              cmdStrobe(CC1101_SRX)
+#define setRxState()              cc1101_cmdStrobe(CC1101_SRX)
 // Enter Tx state
-#define setTxState()              cmdStrobe(CC1101_STX)
+#define setTxState()              cc1101_cmdStrobe(CC1101_STX)
 // Enter IDLE state
-#define setIdleState()            cmdStrobe(CC1101_SIDLE)
+#define setIdleState()            cc1101_cmdStrobe(CC1101_SIDLE)
 // Flush Rx FIFO
-#define flushRxFifo()             cmdStrobe(CC1101_SFRX)
+#define flushRxFifo()             cc1101_cmdStrobe(CC1101_SFRX)
 // Flush Tx FIFO
-#define flushTxFifo()             cmdStrobe(CC1101_SFTX)
+#define flushTxFifo()             cc1101_cmdStrobe(CC1101_SFTX)
 // Disable address check
-#define disableAddressCheck()     writeReg(CC1101_PKTCTRL1, 0x04)
+#define disableAddressCheck()     cc1101_writeReg(CC1101_PKTCTRL1, 0x04)
 // Enable address check
 #define enableAddressCheck()      writeReg(CC1101_PKTCTRL1, 0x06)
 // Disable CCA
@@ -256,73 +256,30 @@ enum
 #define PA_LowPower               0x60
 #define PA_LongDistance           0xC0
 
+/**
+ * init
+ * 
+ * Initializa CC1101
+ */
+void cc1101_init(void);
+
+/**
+ * sendData
+ * 
+ * Send data packet via RF
+ * 
+ * 'packet'	Packet to be transmitted. First byte is the destination address
+ *
+ *  Return:
+ *    True if the transmission succeeds
+ *    False otherwise
+ */
+bool cc1101_sendData(uint8_t* packet, uint8_t len);
+
 
 class CC1101
 {
   private:
-
-    /**
-     * setDefaultRegs
-     * 
-     * Configure CC1101 registers
-     */
-    void setDefaultRegs(void);
-
-  public:
-
-	  void writeBurstReg(uint8_t regAddr, uint8_t* buffer, uint8_t len);
-
-    /**
-     * cmdStrobe
-     * 
-     * Send command strobe to the CC1101 IC via SPI
-     * 
-     * 'cmd'	Command strobe
-     */
-    void cmdStrobe(uint8_t cmd);
-
-    /**
-     * readReg
-     * 
-     * Read CC1101 register via SPI
-     * 
-     * 'regAddr'	Register address
-     * 'regType'	Type of register: CC1101_CONFIG_REGISTER or CC1101_STATUS_REGISTER
-     * 
-     * Return:
-     * 	Data byte returned by the CC1101 IC
-     */
-    uint8_t readReg(uint8_t regAddr, uint8_t regType);
-
-    /**
-     * writeReg
-     * 
-     * Write single register into the CC1101 IC via SPI
-     * 
-     * 'regAddr'	Register address
-     * 'value'	Value to be writen
-     */
-    void writeReg(uint8_t regAddr, uint8_t value);
-
-    /**
-     * init
-     * 
-     * Initializa CC1101
-     */
-    void init(void);
-
-    /**
-     * sendData
-     * 
-     * Send data packet via RF
-     * 
-     * 'packet'	Packet to be transmitted. First byte is the destination address
-     *
-     *  Return:
-     *    True if the transmission succeeds
-     *    False otherwise
-     */
-    bool sendData(uint8_t* packet, uint8_t len);
 
 };
 

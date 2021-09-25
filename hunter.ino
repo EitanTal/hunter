@@ -13,8 +13,6 @@ enum
   LED_ACTIVITY = 7
 };
 
-CC1101 cc1101;
-
 ////////////////////////////////////////////////////////
 
 void setup()
@@ -33,7 +31,7 @@ void setup()
   digitalWrite(BUTTON_5, HIGH);
   digitalWrite(BUTTON_6, HIGH);
 
-  cc1101.init();
+  cc1101_init();
   delay(1000);
 }
 
@@ -62,7 +60,7 @@ void loop()
     for (int i = 0; i < 16; i++)
     {
       digitalWrite(LED_ACTIVITY, ((i%2) ? HIGH : LOW));
-      cc1101.sendData(tx_buf, SIZEOF_HUNTER_DATA_BUFFER);
+      cc1101_sendData(tx_buf, SIZEOF_HUNTER_DATA_BUFFER);
       delay(10);
     }
   }
