@@ -2,6 +2,8 @@
 #include "io.h"
 #include "main.h"
 
+#include "stm8l10x.h"
+
 // Wait until SPI operation is terminated
 static void wait_Spi(void)
 {

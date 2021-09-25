@@ -34,3 +34,4 @@ Debug/
 Release/
 *.dep
 *.wed
+.vscode/settings.json
