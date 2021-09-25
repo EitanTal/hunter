@@ -295,6 +295,11 @@ Next=Root.Source Files.hunter_data.c
 [Root.Source Files.hunter_data.c]
 ElemType=File
 PathName=hunter_data.c
+Next=Root.Source Files.io.c
+
+[Root.Source Files.io.c]
+ElemType=File
+PathName=io.c
 Next=Root.Source Files.main.c
 
 [Root.Source Files.main.c]
@@ -310,6 +315,11 @@ Next=Root.Source Files.stm8_interrupt_vector.c
 [Root.Source Files.stm8_interrupt_vector.c]
 ElemType=File
 PathName=stm8_interrupt_vector.c
+Next=Root.Source Files.time.c
+
+[Root.Source Files.time.c]
+ElemType=File
+PathName=time.c
 
 [Root.Include Files]
 ElemType=Folder
