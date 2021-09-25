@@ -41,6 +41,11 @@
 #define wait_GDO0_low()  while(getGDO0state())
 
 /**
+ * Atmega's SPI interface
+ */
+static SPI cc1101_spi;
+
+/**
  * writeReg
  * 
  * Write single register into the CC1101 IC via SPI
@@ -52,8 +57,8 @@ void CC1101::writeReg(uint8_t regAddr, uint8_t value)
 {
   cc1101_Select();                      // Select CC1101
   wait_Miso();                          // Wait until MISO goes low
-  spi.send(regAddr);                    // Send register address
-  spi.send(value);                      // Send value
+  cc1101_spi.send(regAddr);                    // Send register address
+  cc1101_spi.send(value);                      // Send value
   cc1101_Deselect();                    // Deselect CC1101
 }
 
@@ -73,10 +78,10 @@ void CC1101::writeBurstReg(uint8_t regAddr, uint8_t* buffer, uint8_t len)
   addr = regAddr | WRITE_BURST;         // Enable burst transfer
   cc1101_Select();                      // Select CC1101
   wait_Miso();                          // Wait until MISO goes low
-  spi.send(addr);                       // Send register address
+  cc1101_spi.send(addr);                       // Send register address
   
   for(i=0 ; i<len ; i++)
-    spi.send(buffer[i]);                // Send value
+    cc1101_spi.send(buffer[i]);                // Send value
 
   cc1101_Deselect();                    // Deselect CC1101  
 }
@@ -92,7 +97,7 @@ void CC1101::cmdStrobe(uint8_t cmd)
 {
   cc1101_Select();                      // Select CC1101
   wait_Miso();                          // Wait until MISO goes low
-  spi.send(cmd);                        // Send strobe command
+  cc1101_spi.send(cmd);                        // Send strobe command
   cc1101_Deselect();                    // Deselect CC1101
 }
 
@@ -114,8 +119,8 @@ uint8_t CC1101::readReg(uint8_t regAddr, uint8_t regType)
   addr = regAddr | regType;
   cc1101_Select();                      // Select CC1101
   wait_Miso();                          // Wait until MISO goes low
-  spi.send(addr);                       // Send register address
-  val = spi.send(0x00);                 // Read result
+  cc1101_spi.send(addr);                       // Send register address
+  val = cc1101_spi.send(0x00);                 // Read result
   cc1101_Deselect();                    // Deselect CC1101
 
   return val;
@@ -191,9 +196,9 @@ void CC1101::setDefaultRegs(void)
  */
 void CC1101::init(void) 
 {
-  spi.init();                           // Initialize SPI interface
-  //spi.setClockDivider(SPI_CLOCK_DIV16);
-  //spi.setBitOrder(MSBFIRST);
+  cc1101_spi.init();                           // Initialize SPI interface
+  //cc1101_spi.setClockDivider(SPI_CLOCK_DIV16);
+  //cc1101_spi.setBitOrder(MSBFIRST);
   pinMode(GDO0, INPUT);                 // Config GDO0 as input
 
   // reset
@@ -207,7 +212,7 @@ void CC1101::init(void)
     cc1101_Select();                      // Select CC1101
 
     wait_Miso();                          // Wait until MISO goes low
-    spi.send(CC1101_SRES);                // Send reset command strobe
+    cc1101_spi.send(CC1101_SRES);                // Send reset command strobe
     wait_Miso();                          // Wait until MISO goes low
 
     cc1101_Deselect();                    // Deselect CC1101
@@ -239,10 +244,6 @@ bool CC1101::sendData(uint8_t* packet, uint8_t len)
   uint8_t marcState;
   bool res = false;
  
-  // Declare to be in Tx state. This will avoid receiving packets whilst
-  // transmitting
-  rfState = RFSTATE_TX;
-
   // Enter RX state
   setRxState();
 
@@ -271,8 +272,6 @@ bool CC1101::sendData(uint8_t* packet, uint8_t len)
     flushTxFifo();        // Flush Tx FIFO
     setRxState();         // Back to RX state
 
-    // Declare to be in Rx state
-    rfState = RFSTATE_RX;
     return false;
   }
 
@@ -291,9 +290,6 @@ bool CC1101::sendData(uint8_t* packet, uint8_t len)
 
   // Enter back into RX state
   setRxState();
-
-  // Declare to be in Rx state
-  rfState = RFSTATE_RX;
 
   return res;
 }

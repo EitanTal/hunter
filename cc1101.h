@@ -28,16 +28,6 @@
 #include "Arduino.h"
 #include "spi.h"
 
-/**
- * RF STATES
- */
-enum RFSTATE
-{
-  RFSTATE_IDLE = 0,
-  RFSTATE_RX,
-  RFSTATE_TX
-};
-
 enum
 {
   PA_POWER_MINUS_0 = 0x51,
@@ -266,19 +256,10 @@ enum
 #define PA_LowPower               0x60
 #define PA_LongDistance           0xC0
 
-/**
- * Class: CC1101
- * 
- * Description:
- * CC1101 interface
- */
+
 class CC1101
 {
   private:
-    /**
-     * Atmega's SPI interface
-     */
-    SPI spi;
 
     /**
      * setDefaultRegs
@@ -287,28 +268,7 @@ class CC1101
      */
     void setDefaultRegs(void);
 
-    /**
-     * setRegsFromEeprom
-     * 
-     * Set registers from EEPROM
-     */
-    void setRegsFromEeprom(void);
-
   public:
-    /*
-     * RF state
-     */
-    uint8_t rfState;
-
-    /**
-     * Frequency channel
-     */
-    uint8_t channel;
-
-    /**
-     * Synchronization word
-     */
-    uint8_t syncWord[2];
 
 	  void writeBurstReg(uint8_t regAddr, uint8_t* buffer, uint8_t len);
 
