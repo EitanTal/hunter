@@ -46,16 +46,6 @@
 //const uint8_t paTable[8] = {0x60, 0x60, 0x60, 0x60, 0x60, 0x60, 0x60, 0x60};
 
 /**
- * CC1101
- * 
- * Class constructor
- */
-CC1101::CC1101(void)
-{
-  paTableByte = PA_LowPower;            // Priority = Low power
-}
-
-/**
  * wakeUp
  * 
  * Wake up CC1101 from Power Down state
@@ -263,7 +253,7 @@ void CC1101::init(void)
   }
   // Configure PATABLE
   //writeBurstReg(CC1101_PATABLE, (uint8_t*)paTable, 8);
-  writeReg(CC1101_PATABLE, paTableByte);
+  writeReg(CC1101_PATABLE, PA_LowPower);
   uint8_t PA_TABLE[] = {0x00, PA_POWER_MINUS_0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
   this->writeBurstReg(CC1101_PATABLE, PA_TABLE, 8);
 

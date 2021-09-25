@@ -261,8 +261,7 @@ enum
 #define disableCCA()              writeReg(CC1101_MCSM1, 0)
 // Enable CCA
 #define enableCCA()               writeReg(CC1101_MCSM1, CC1101_DEFVAL_MCSM1)
-// Set PATABLE single byte
-#define setTxPowerAmp(setting)    paTableByte = setting
+
 // PATABLE values
 #define PA_LowPower               0x60
 #define PA_LongDistance           0xC0
@@ -324,11 +323,6 @@ class CC1101
     uint8_t rfState;
 
     /**
-     * Tx Power byte (single PATABLE config)
-     */
-    uint8_t paTableByte;
-
-    /**
      * Frequency channel
      */
     uint8_t channel;
@@ -343,14 +337,7 @@ class CC1101
      */
     uint8_t devAddress;
 
-    /**
-     * CC1101
-     * 
-     * Class constructor
-     */
-    CC1101(void);
-	
-	void writeBurstReg(uint8_t regAddr, uint8_t* buffer, uint8_t len);
+	  void writeBurstReg(uint8_t regAddr, uint8_t* buffer, uint8_t len);
 
     /**
      * cmdStrobe
