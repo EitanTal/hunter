@@ -281,28 +281,6 @@ class CC1101
     SPI spi;
 
     /**
-     * writeBurstReg
-     * 
-     * Write multiple registers into the CC1101 IC via SPI
-     * 
-     * 'regAddr'	Register address
-     * 'buffer'	Data to be writen
-     * 'len'	Data length
-     */
-    //void writeBurstReg(uint8_t regAddr, uint8_t* buffer, uint8_t len);
-
-    /**
-     * readBurstReg
-     * 
-     * Read burst data from CC1101 via SPI
-     * 
-     * 'buffer'	Buffer where to copy the result to
-     * 'regAddr'	Register address
-     * 'len'	Data length
-     */
-    void readBurstReg(uint8_t * buffer, uint8_t regAddr, uint8_t len);
-
-    /**
      * setDefaultRegs
      * 
      * Configure CC1101 registers
@@ -332,11 +310,6 @@ class CC1101
      */
     uint8_t syncWord[2];
 
-    /**
-     * Device address
-     */
-    uint8_t devAddress;
-
 	  void writeBurstReg(uint8_t regAddr, uint8_t* buffer, uint8_t len);
 
     /**
@@ -347,13 +320,6 @@ class CC1101
      * 'cmd'	Command strobe
      */
     void cmdStrobe(uint8_t cmd);
-
-    /**
-     * wakeUp
-     * 
-     * Wake up CC1101 from Power Down state
-     */
-    void wakeUp(void);
 
     /**
      * readReg
@@ -405,16 +371,6 @@ class CC1101
      * 'save' If TRUE, save parameter in EEPROM
      */
     void setSyncWord(uint8_t *sync, bool save=true);
-
-    /**
-     * setDevAddress
-     * 
-     * Set device address
-     * 
-     * 'addr'	Device address
-     * 'save' If TRUE, save parameter in EEPROM
-     */
-    void setDevAddress(uint8_t addr, bool save=true);
 
     /**
      * setCarrierFreq

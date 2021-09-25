@@ -40,23 +40,6 @@
 // Wait until GDO0 line goes low
 #define wait_GDO0_low()  while(getGDO0state())
 
- /**
-  * PATABLE
-  */
-//const uint8_t paTable[8] = {0x60, 0x60, 0x60, 0x60, 0x60, 0x60, 0x60, 0x60};
-
-/**
- * wakeUp
- * 
- * Wake up CC1101 from Power Down state
- */
-void CC1101::wakeUp(void)
-{
-  cc1101_Select();                      // Select CC1101
-  wait_Miso();                          // Wait until MISO goes low
-  cc1101_Deselect();                    // Deselect CC1101
-}
-
 /**
  * writeReg
  * 
@@ -139,29 +122,6 @@ uint8_t CC1101::readReg(uint8_t regAddr, uint8_t regType)
 }
 
 /**
- * readBurstReg
- * 
- * Read burst data from CC1101 via SPI
- * 
- * 'buffer'	Buffer where to copy the result to
- * 'regAddr'	Register address
- * 'len'	Data length
- */
-void CC1101::readBurstReg(uint8_t * buffer, uint8_t regAddr, uint8_t len) 
-{
-  uint8_t addr, i;
-  
-  addr = regAddr | READ_BURST;
-  cc1101_Select();                      // Select CC1101
-  wait_Miso();                          // Wait until MISO goes low
-  spi.send(addr);                       // Send register address
-  for(i=0 ; i<len ; i++)
-    buffer[i] = spi.send(0x00);         // Read result byte by byte
-  cc1101_Deselect();                    // Deselect CC1101
-}
-
-
-/**
  * setDefaultRegs
  * 
  * Configure CC1101 registers
@@ -176,7 +136,7 @@ void CC1101::setDefaultRegs(void)
   writeReg(CC1101_PKTCTRL1,  CC1101_DEFVAL_PKTCTRL1);
   writeReg(CC1101_PKTCTRL0,  CC1101_DEFVAL_PKTCTRL0);
   setSyncWord(CC1101_DEFVAL_SYNC1, CC1101_DEFVAL_SYNC0, false); // Set default synchronization word
-  setDevAddress(CC1101_DEFVAL_ADDR, false); // Set default device address
+  writeReg(CC1101_ADDR, CC1101_DEFVAL_ADDR); // Set default device address
   setChannel(CC1101_DEFVAL_CHANNR, false); // Set default frequency channel
 	writeReg(CC1101_CHANNR,  CC1101_DEFVAL_CHANNR);
 	writeReg(CC1101_ADDR,  CC1101_DEFVAL_ADDR);
@@ -251,15 +211,15 @@ void CC1101::init(void)
 
     setDefaultRegs();                     // Reconfigure CC1101
   }
+
   // Configure PATABLE
-  //writeBurstReg(CC1101_PATABLE, (uint8_t*)paTable, 8);
   writeReg(CC1101_PATABLE, PA_LowPower);
   uint8_t PA_TABLE[] = {0x00, PA_POWER_MINUS_0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-  this->writeBurstReg(CC1101_PATABLE, PA_TABLE, 8);
+  writeBurstReg(CC1101_PATABLE, PA_TABLE, 8);
 
   uint8_t syncWord[] = {0x55, 0x55};
-  this->setSyncWord(syncWord, false);
-  this->disableAddressCheck();
+  setSyncWord(syncWord, false);
+  disableAddressCheck();
 }
 
 /**
@@ -293,23 +253,6 @@ void CC1101::setSyncWord(uint8_t syncH, uint8_t syncL, bool save)
 void CC1101::setSyncWord(uint8_t *sync, bool save) 
 {
   CC1101::setSyncWord(sync[0], sync[1], save);
-}
-
-/**
- * setDevAddress
- * 
- * Set device address
- * 
- * 'addr'	Device address
- * 'save' If TRUE, save parameter in EEPROM
- */
-void CC1101::setDevAddress(uint8_t addr, bool save) 
-{
-  if (devAddress != addr)
-  {
-    writeReg(CC1101_ADDR, addr);
-    devAddress = addr;
-  }
 }
 
 /**
