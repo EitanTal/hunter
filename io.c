@@ -1,3 +1,5 @@
+#include "stm8l10x.h"
+
 void pinMode(int pin, int val)
 {
 

@@ -127,6 +127,7 @@
 #define     __O     volatile                  /*!< defines 'write only' permissions     */
 #define     __IO    volatile                  /*!< defines 'read / write' permissions   */
 
+#if 0
 /*!< Signed integer types  */
 typedef   signed char     int8_t;
 typedef   signed short    int16_t;
@@ -136,7 +137,9 @@ typedef   signed long     int32_t;
 typedef unsigned char     uint8_t;
 typedef unsigned short    uint16_t;
 typedef unsigned long     uint32_t;
-
+#else
+#include <stdint.h>
+#endif
 /*!< STM8L10x Standard Peripheral Library old types (maintained for legacy prupose) */
 
 typedef int32_t  s32;
