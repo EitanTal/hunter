@@ -108,13 +108,12 @@ void cc_setup()
 #ifdef USE_SERIAL
   Serial.println("Setting PA_TABLE.");
 #endif
-  config2();
-
+  //config2(); // set PA Table here
+#if 0
   uint8_t syncWord[] = {0x55, 0x55};
   cc1101.setSyncWord(syncWord, false);
-  cc1101.setCarrierFreq(CFREQ_302);
   cc1101.disableAddressCheck();
-
+#endif
   delay(1000);
 #ifdef USE_SERIAL
   Serial.print("CC1101_PARTNUM ");
@@ -147,15 +146,3 @@ void cc_send_data(uint8_t *le_data, int loops)
   }
 }
 
-void config2()
-{
-  enum
-  {
-    PA_POWER_MINUS_0 = 0x51,
-    PA_POWER_MINUS_15 = 0x1D,
-    PA_POWER_MINUS_30 = 0x03,
-    PA_POWER_ORIGINAL = 0xC0,
-  };
-  uint8_t PA_TABLE[] = {0x00, PA_POWER_MINUS_0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-  cc1101.writeBurstReg(CC1101_PATABLE, PA_TABLE, 8);
-}

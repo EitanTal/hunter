@@ -29,20 +29,6 @@
 #include "spi.h"
 
 /**
- * Carrier frequencies
- */
-enum CFREQ
-{
-  CFREQ_868 = 0,
-  CFREQ_915,
-  CFREQ_433,
-  CFREQ_400,
-  CFREQ_304,
-  CFREQ_302,
-  CFREQ_LAST
-};
-
-/**
  * RF STATES
  */
 enum RFSTATE
@@ -52,6 +38,13 @@ enum RFSTATE
   RFSTATE_TX
 };
 
+enum
+{
+  PA_POWER_MINUS_0 = 0x51,
+  PA_POWER_MINUS_15 = 0x1D,
+  PA_POWER_MINUS_30 = 0x03,
+  PA_POWER_ORIGINAL = 0xC0,
+};
 
 /**
  * Frequency channels
@@ -336,11 +329,6 @@ class CC1101
     uint8_t paTableByte;
 
     /**
-     * Carrier frequency
-     */
-    uint8_t carrierFreq;
-
-    /**
      * Frequency channel
      */
     uint8_t channel;
@@ -403,13 +391,6 @@ class CC1101
      */
     void writeReg(uint8_t regAddr, uint8_t value);
 
-    /**
-     * reset
-     * 
-     * Reset CC1101
-     */
-    void reset(void);
-    
     /**
      * init
      * 

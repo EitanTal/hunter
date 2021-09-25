@@ -170,30 +170,6 @@ void CC1101::readBurstReg(uint8_t * buffer, uint8_t regAddr, uint8_t len)
   cc1101_Deselect();                    // Deselect CC1101
 }
 
-/**
- * reset
- * 
- * Reset CC1101
- */
-void CC1101::reset(void) 
-{
-  cc1101_Deselect();                    // Deselect CC1101
-  delayMicroseconds(5);
-  cc1101_Select();                      // Select CC1101
-  delayMicroseconds(10);
-  cc1101_Deselect();                    // Deselect CC1101
-  delayMicroseconds(41);
-  cc1101_Select();                      // Select CC1101
-
-  wait_Miso();                          // Wait until MISO goes low
-  spi.send(CC1101_SRES);                // Send reset command strobe
-  wait_Miso();                          // Wait until MISO goes low
-
-  cc1101_Deselect();                    // Deselect CC1101
-
-  setDefaultRegs();                     // Reconfigure CC1101
-  
-}
 
 /**
  * setDefaultRegs
@@ -209,38 +185,25 @@ void CC1101::setDefaultRegs(void)
   writeReg(CC1101_PKTLEN,  CC1101_DEFVAL_PKTLEN);
   writeReg(CC1101_PKTCTRL1,  CC1101_DEFVAL_PKTCTRL1);
   writeReg(CC1101_PKTCTRL0,  CC1101_DEFVAL_PKTCTRL0);
-
-  // Set default synchronization word
-  setSyncWord(CC1101_DEFVAL_SYNC1, CC1101_DEFVAL_SYNC0, false);
-
-  // Set default device address
-  setDevAddress(CC1101_DEFVAL_ADDR, false);
-  // Set default frequency channel
-  setChannel(CC1101_DEFVAL_CHANNR, false);
-  
-
+  setSyncWord(CC1101_DEFVAL_SYNC1, CC1101_DEFVAL_SYNC0, false); // Set default synchronization word
+  setDevAddress(CC1101_DEFVAL_ADDR, false); // Set default device address
+  setChannel(CC1101_DEFVAL_CHANNR, false); // Set default frequency channel
 	writeReg(CC1101_CHANNR,  CC1101_DEFVAL_CHANNR);
 	writeReg(CC1101_ADDR,  CC1101_DEFVAL_ADDR);
-
-
-
   writeReg(CC1101_FSCTRL1,  CC1101_DEFVAL_FSCTRL1);
   writeReg(CC1101_FSCTRL0,  CC1101_DEFVAL_FSCTRL0);
-
-  // Set default carrier frequency = 868 MHz
-  setCarrierFreq(CFREQ_433);
-
+  writeReg(CC1101_FREQ2,  CC1101_DEFVAL_FREQ2_302);
+  writeReg(CC1101_FREQ1,  CC1101_DEFVAL_FREQ1_302);
+  writeReg(CC1101_FREQ0,  CC1101_DEFVAL_FREQ0_302);
   writeReg(CC1101_MDMCFG4,  CC1101_DEFVAL_MDMCFG4);
   writeReg(CC1101_MDMCFG3,  CC1101_DEFVAL_MDMCFG3);
   writeReg(CC1101_MDMCFG2,  CC1101_DEFVAL_MDMCFG2);
   writeReg(CC1101_MDMCFG1,  CC1101_DEFVAL_MDMCFG1);
   writeReg(CC1101_MDMCFG0,  CC1101_DEFVAL_MDMCFG0);
   writeReg(CC1101_DEVIATN,  CC1101_DEFVAL_DEVIATN);
-
   writeReg(CC1101_PKTLEN,  CC1101_DEFVAL_PKTLEN);
   writeReg(CC1101_PKTCTRL1,  CC1101_DEFVAL_PKTCTRL1);
   writeReg(CC1101_PKTCTRL0,  CC1101_DEFVAL_PKTCTRL0);
-
   writeReg(CC1101_MCSM2,  CC1101_DEFVAL_MCSM2);
   writeReg(CC1101_MCSM1,  CC1101_DEFVAL_MCSM1);
   writeReg(CC1101_MCSM0,  CC1101_DEFVAL_MCSM0);
@@ -280,11 +243,33 @@ void CC1101::init(void)
   //spi.setBitOrder(MSBFIRST);
   pinMode(GDO0, INPUT);                 // Config GDO0 as input
 
-  reset();                              // Reset CC1101
+  // reset
+  {
+    cc1101_Deselect();                    // Deselect CC1101
+    delayMicroseconds(5);
+    cc1101_Select();                      // Select CC1101
+    delayMicroseconds(10);
+    cc1101_Deselect();                    // Deselect CC1101
+    delayMicroseconds(41);
+    cc1101_Select();                      // Select CC1101
 
+    wait_Miso();                          // Wait until MISO goes low
+    spi.send(CC1101_SRES);                // Send reset command strobe
+    wait_Miso();                          // Wait until MISO goes low
+
+    cc1101_Deselect();                    // Deselect CC1101
+
+    setDefaultRegs();                     // Reconfigure CC1101
+  }
   // Configure PATABLE
   //writeBurstReg(CC1101_PATABLE, (uint8_t*)paTable, 8);
   writeReg(CC1101_PATABLE, paTableByte);
+  uint8_t PA_TABLE[] = {0x00, PA_POWER_MINUS_0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  this->writeBurstReg(CC1101_PATABLE, PA_TABLE, 8);
+
+  uint8_t syncWord[] = {0x55, 0x55};
+  this->setSyncWord(syncWord, false);
+  this->disableAddressCheck();
 }
 
 /**
@@ -363,41 +348,6 @@ void CC1101::setChannel(uint8_t chnl, bool save)
  */
 void CC1101::setCarrierFreq(uint8_t freq)
 {
-  switch(freq)
-  {
-    case CFREQ_915:
-      writeReg(CC1101_FREQ2,  CC1101_DEFVAL_FREQ2_915);
-      writeReg(CC1101_FREQ1,  CC1101_DEFVAL_FREQ1_915);
-      writeReg(CC1101_FREQ0,  CC1101_DEFVAL_FREQ0_915);
-      break;
-    case CFREQ_433:
-      writeReg(CC1101_FREQ2,  CC1101_DEFVAL_FREQ2_433);
-      writeReg(CC1101_FREQ1,  CC1101_DEFVAL_FREQ1_433);
-      writeReg(CC1101_FREQ0,  CC1101_DEFVAL_FREQ0_433);
-      break;
-    case CFREQ_400:
-      writeReg(CC1101_FREQ2,  CC1101_DEFVAL_FREQ2_400);
-      writeReg(CC1101_FREQ1,  CC1101_DEFVAL_FREQ1_400);
-      writeReg(CC1101_FREQ0,  CC1101_DEFVAL_FREQ0_400);
-      break;
-    case CFREQ_304:
-      writeReg(CC1101_FREQ2,  CC1101_DEFVAL_FREQ2_304);
-      writeReg(CC1101_FREQ1,  CC1101_DEFVAL_FREQ1_304);
-      writeReg(CC1101_FREQ0,  CC1101_DEFVAL_FREQ0_304);
-      break;
-    case CFREQ_302:
-      writeReg(CC1101_FREQ2,  CC1101_DEFVAL_FREQ2_302);
-      writeReg(CC1101_FREQ1,  CC1101_DEFVAL_FREQ1_302);
-      writeReg(CC1101_FREQ0,  CC1101_DEFVAL_FREQ0_302);
-      break;
-    default:
-      writeReg(CC1101_FREQ2,  CC1101_DEFVAL_FREQ2_868);
-      writeReg(CC1101_FREQ1,  CC1101_DEFVAL_FREQ1_868);
-      writeReg(CC1101_FREQ0,  CC1101_DEFVAL_FREQ0_868);
-      break;
-  }
-   
-  carrierFreq = freq;  
 }
 
 
