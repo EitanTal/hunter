@@ -211,7 +211,7 @@ String.6.0=2021,9,23,22,3,19
 [Root.Source Files]
 ElemType=Folder
 PathName=Source Files
-Child=Root.Source Files.cc1101.cpp
+Child=Root.Source Files.cc1101.c
 Next=Root.Include Files
 Config.0=Root.Source Files.Config.0
 Config.1=Root.Source Files.Config.1
@@ -282,19 +282,29 @@ String.4.0=
 String.5.0=
 String.6.0=2021,9,23,22,3,19
 
-[Root.Source Files.cc1101.cpp]
+[Root.Source Files.cc1101.c]
 ElemType=File
-PathName=cc1101.cpp
-Next=Root.Source Files.hunter_data.cpp
+PathName=cc1101.c
+Next=Root.Source Files.hunter.c
 
-[Root.Source Files.hunter_data.cpp]
+[Root.Source Files.hunter.c]
 ElemType=File
-PathName=hunter_data.cpp
+PathName=hunter.c
+Next=Root.Source Files.hunter_data.c
+
+[Root.Source Files.hunter_data.c]
+ElemType=File
+PathName=hunter_data.c
 Next=Root.Source Files.main.c
 
 [Root.Source Files.main.c]
 ElemType=File
 PathName=main.c
+Next=Root.Source Files.spi.c
+
+[Root.Source Files.spi.c]
+ElemType=File
+PathName=spi.c
 Next=Root.Source Files.stm8_interrupt_vector.c
 
 [Root.Source Files.stm8_interrupt_vector.c]

@@ -1,12 +1,19 @@
 #include "spi.h"
-#include <Arduino.h>
+#include "io.h"
+
+// Wait until SPI operation is terminated
+void wait_Spi()
+{
+  // ! Replace arduino
+  //while(!(SPSR & _BV(SPIF))) {;}
+}  
 
 /**
  * init
  * 
  * SPI initialization
  */
-void spi_init() 
+void spi_init(void)
 {
   digitalWrite(SPI_SS, HIGH);
   
@@ -20,7 +27,7 @@ void spi_init()
   digitalWrite(SPI_MOSI, LOW);
 
   // SPI speed = clk/4
-  SPCR = _BV(SPE) | _BV(MSTR);
+  //SPCR = _BV(SPE) | _BV(MSTR);   // ! Replace arduino
 }
 
 /**
@@ -41,3 +48,20 @@ uint8_t spi_send(uint8_t value)
   return SPDR;
 }
 
+// Select (SPI) CC1101
+void cc1101_Select(void)
+{
+  bitClear(PORT_SPI_SS, BIT_SPI_SS);
+}
+
+// Deselect (SPI) CC1101
+void cc1101_Deselect(void)
+{
+  bitSet(PORT_SPI_SS, BIT_SPI_SS);
+}
+
+// Wait until SPI MISO line goes low
+void wait_Miso(void)
+{
+  while(bitRead(PORT_SPI_MISO, BIT_SPI_MISO));
+}

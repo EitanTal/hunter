@@ -1,13 +1,15 @@
 #include "cc1101.h"
-#include "Arduino.h"
 #include "spi.h"
+#include "io.h"
+#include "time.h"
+#include "main.h"
 
 enum
 {
   PA_POWER_MINUS_0 = 0x51,
   PA_POWER_MINUS_15 = 0x1D,
   PA_POWER_MINUS_30 = 0x03,
-  PA_POWER_ORIGINAL = 0xC0,
+  PA_POWER_ORIGINAL = 0xC0
 };
 
 /**
@@ -230,21 +232,20 @@ enum
 #define PA_LowPower               0x60
 #define PA_LongDistance           0xC0
 
-/**
- * Macros
- */
-// Select (SPI) CC1101
-#define cc1101_Select()  bitClear(PORT_SPI_SS, BIT_SPI_SS)
-// Deselect (SPI) CC1101
-#define cc1101_Deselect()  bitSet(PORT_SPI_SS, BIT_SPI_SS)
-// Wait until SPI MISO line goes low
-#define wait_Miso()  while(bitRead(PORT_SPI_MISO, BIT_SPI_MISO))
-// Get GDO0 pin state
-#define getGDO0state()  bitRead(PORT_GDO0, BIT_GDO0)
-// Wait until GDO0 line goes high
-#define wait_GDO0_high()  while(!getGDO0state())
-// Wait until GDO0 line goes low
-#define wait_GDO0_low()  while(getGDO0state())
+int getGDO0state(void)
+{
+  bitRead(PORT_GDO0, BIT_GDO0);
+}
+
+void wait_GDO0_high(void)
+{
+  while(!getGDO0state());
+}
+
+void wait_GDO0_low(void)
+{
+  while(getGDO0state());
+}
 
 static void cc1101_setDefaultRegs(void);
 
@@ -407,6 +408,7 @@ void cc1101_setDefaultRegs(void)
  */
 void cc1101_init(void) 
 {
+	uint8_t PA_TABLE[] = {0x00, PA_POWER_MINUS_0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
   spi_init();                           // Initialize SPI interface
   //setClockDivider(SPI_CLOCK_DIV16);
   //setBitOrder(MSBFIRST);
@@ -433,7 +435,7 @@ void cc1101_init(void)
 
   // Configure PATABLE
   cc1101_writeReg(CC1101_PATABLE, PA_LowPower);
-  uint8_t PA_TABLE[] = {0x00, PA_POWER_MINUS_0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  
   cc1101_writeBurstReg(CC1101_PATABLE, PA_TABLE, 8);
 
   disableAddressCheck();
