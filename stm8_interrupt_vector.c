@@ -20,7 +20,7 @@ struct interrupt_vector {
 
 @far @interrupt void IRQ13 (void)
 {
-	ISR_TIM2_UPDATEOVERFLOW();
+	//ISR_TIM2_UPDATEOVERFLOW(); // ! Example
 }
 
 extern void _stext();     /* startup routine */

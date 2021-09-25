@@ -1,8 +1,9 @@
 #include "spi.h"
 #include "io.h"
+#include "main.h"
 
 // Wait until SPI operation is terminated
-void wait_Spi()
+static void wait_Spi(void)
 {
   // ! Replace arduino
   //while(!(SPSR & _BV(SPIF))) {;}
@@ -42,6 +43,7 @@ void spi_init(void)
  */
 uint8_t spi_send(uint8_t value) 
 {
+  int SPDR; // ! Arduino
   SPDR = value;                          // Transfer byte via SPI
   wait_Spi();                            // Wait until SPI operation is terminated
 
