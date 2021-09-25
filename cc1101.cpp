@@ -246,11 +246,6 @@ enum
 // Wait until GDO0 line goes low
 #define wait_GDO0_low()  while(getGDO0state())
 
-/**
- * Atmega's SPI interface
- */
-static SPI cc1101_spi;
-
 static void cc1101_setDefaultRegs(void);
 
 static void cc1101_writeBurstReg(uint8_t regAddr, uint8_t* buffer, uint8_t len);
@@ -273,8 +268,8 @@ void cc1101_writeReg(uint8_t regAddr, uint8_t value)
 {
   cc1101_Select();                      // Select CC1101
   wait_Miso();                          // Wait until MISO goes low
-  cc1101_spi.send(regAddr);                    // Send register address
-  cc1101_spi.send(value);                      // Send value
+  spi_send(regAddr);                    // Send register address
+  spi_send(value);                      // Send value
   cc1101_Deselect();                    // Deselect CC1101
 }
 
@@ -294,10 +289,10 @@ void cc1101_writeBurstReg(uint8_t regAddr, uint8_t* buffer, uint8_t len)
   addr = regAddr | WRITE_BURST;         // Enable burst transfer
   cc1101_Select();                      // Select CC1101
   wait_Miso();                          // Wait until MISO goes low
-  cc1101_spi.send(addr);                       // Send register address
+  spi_send(addr);                       // Send register address
   
   for(i=0 ; i<len ; i++)
-    cc1101_spi.send(buffer[i]);                // Send value
+    spi_send(buffer[i]);                // Send value
 
   cc1101_Deselect();                    // Deselect CC1101  
 }
@@ -313,7 +308,7 @@ void cc1101_cmdStrobe(uint8_t cmd)
 {
   cc1101_Select();                      // Select CC1101
   wait_Miso();                          // Wait until MISO goes low
-  cc1101_spi.send(cmd);                        // Send strobe command
+  spi_send(cmd);                        // Send strobe command
   cc1101_Deselect();                    // Deselect CC1101
 }
 
@@ -335,8 +330,8 @@ uint8_t cc1101_readReg(uint8_t regAddr, uint8_t regType)
   addr = regAddr | regType;
   cc1101_Select();                      // Select CC1101
   wait_Miso();                          // Wait until MISO goes low
-  cc1101_spi.send(addr);                       // Send register address
-  val = cc1101_spi.send(0x00);                 // Read result
+  spi_send(addr);                       // Send register address
+  val = spi_send(0x00);                 // Read result
   cc1101_Deselect();                    // Deselect CC1101
 
   return val;
@@ -406,15 +401,15 @@ void cc1101_setDefaultRegs(void)
 }
 
 /**
- * init
+ * spi_init
  * 
  * Initialize CC1101
  */
 void cc1101_init(void) 
 {
-  cc1101_spi.init();                           // Initialize SPI interface
-  //cc1101_spi.setClockDivider(SPI_CLOCK_DIV16);
-  //cc1101_spi.setBitOrder(MSBFIRST);
+  spi_init();                           // Initialize SPI interface
+  //setClockDivider(SPI_CLOCK_DIV16);
+  //setBitOrder(MSBFIRST);
   pinMode(GDO0, INPUT);                 // Config GDO0 as input
 
   // reset
@@ -428,7 +423,7 @@ void cc1101_init(void)
     cc1101_Select();                      // Select CC1101
 
     wait_Miso();                          // Wait until MISO goes low
-    cc1101_spi.send(CC1101_SRES);                // Send reset command strobe
+    spi_send(CC1101_SRES);                // Send reset command strobe
     wait_Miso();                          // Wait until MISO goes low
 
     cc1101_Deselect();                    // Deselect CC1101

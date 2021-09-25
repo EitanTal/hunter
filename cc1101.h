@@ -4,19 +4,17 @@
 #include <stdbool.h>
 
 /**
- * init
+ * cc1101_init
  * 
  * Initializa CC1101
  */
 void cc1101_init(void);
 
 /**
- * sendData
+ * cc1101_sendData
  * 
  * Send data packet via RF
  * 
- * 'packet'	Packet to be transmitted. First byte is the destination address
- *
  *  Return:
  *    True if the transmission succeeds
  *    False otherwise
