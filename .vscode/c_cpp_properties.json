@@ -11,7 +11,8 @@
                 "C:/Program Files (x86)/Arduino/hardware/arduino/avr/cores/arduino/*",
                 "C:/Program Files (x86)/Arduino/hardware/tools/avr/avr/include/*",
                 "C:/Program Files (x86)/Arduino/hardware/tools/avr/lib/gcc/avr/7.3.0/include/*",
-                "C:/Program Files (x86)/Arduino/hardware/arduino/avr/variants/leonardo/*"
+                "C:/Program Files (x86)/Arduino/hardware/arduino/avr/variants/leonardo/*",
+                "${workspaceFolder}/stm8_hal/inc/*"
             ],
             "forcedInclude": [],
             "cStandard": "c17",
@@ -19,7 +20,8 @@
             "defines": [
                 "_DEBUG",
                 "UNICODE",
-                "_UNICODE"
+                "_UNICODE",
+                "__CSMC__"
             ]
         },
         {
