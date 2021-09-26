@@ -9,7 +9,7 @@ static void wait_Spi(void)
 {
   // ! Replace arduino
   //while(!(SPSR & _BV(SPIF))) {;}
-}  
+}
 
 /**
  * init
@@ -18,54 +18,39 @@ static void wait_Spi(void)
  */
 void spi_init(void)
 {
-  digitalWrite(SPI_SS, HIGH);
-  
-  // Configure SPI pins
-  pinMode(SPI_SS, OUTPUT);
-  pinMode(SPI_MOSI, OUTPUT);
-  pinMode(SPI_MISO, INPUT);
-  pinMode(SPI_SCK, OUTPUT);
-
-  digitalWrite(SPI_SCK, HIGH);
-  digitalWrite(SPI_MOSI, LOW);
-
-  // SPI speed = clk/4
-  //SPCR = _BV(SPE) | _BV(MSTR);   // ! Replace arduino
+  SPI_Init(SPI_FirstBit_MSB, SPI_BaudRatePrescaler_4, SPI_Mode_Master,
+           SPI_CPOL_Low,   // ! unsure
+           SPI_CPHA_1Edge, // ! unsure
+           SPI_Direction_2Lines_FullDuplex, SPI_NSS_Hard);
 }
 
 /**
- * spi_send
- * 
- * Send byte via SPI
- * 
- * 'value'	Value to be sent
- * 
- * Return:
- * 	Response received from SPI slave
+ * spi_send: Exchange a single byte on SPI. Send one byte, receive one byte.
  */
-uint8_t spi_send(uint8_t value) 
+uint8_t spi_send(uint8_t value)
 {
-  int SPDR; // ! Arduino
-  SPDR = value;                          // Transfer byte via SPI
-  wait_Spi();                            // Wait until SPI operation is terminated
-
-  return SPDR;
+  SPI_SendData(value);
+  //wait_Spi();   // Wait until SPI operation is terminated
+  return SPI_ReceiveData();
 }
 
 // Select (SPI) CC1101
 void cc1101_Select(void)
 {
-  bitClear(PORT_SPI_SS, BIT_SPI_SS);
+  //bitClear(PORT_SPI_SS, BIT_SPI_SS);
+  // ! unsure if this is needed
 }
 
 // Deselect (SPI) CC1101
 void cc1101_Deselect(void)
 {
-  bitSet(PORT_SPI_SS, BIT_SPI_SS);
+  //bitSet(PORT_SPI_SS, BIT_SPI_SS);
+  // ! unsure if this is needed
 }
 
 // Wait until SPI MISO line goes low
 void wait_Miso(void)
 {
-  while(bitRead(PORT_SPI_MISO, BIT_SPI_MISO));
+  //while (bitRead(PORT_SPI_MISO, BIT_SPI_MISO));
+  // ! unsure if this is needed
 }
