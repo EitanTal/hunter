@@ -1,10 +1,10 @@
-/* MAIN.C file
- * 
- * Copyright (c) 2002-2005 STMicroelectronics
- */
-
+#include "hunter.h"
 
 main()
 {
-	while (1);
+	setup();
+	while (1)
+	{
+		loop();
+	}
 }

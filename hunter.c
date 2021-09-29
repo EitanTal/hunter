@@ -17,7 +17,7 @@ enum
 
 ////////////////////////////////////////////////////////
 
-void setup()
+void setup(void)
 {
   pinMode(LED_ACTIVITY, OUTPUT);
   pinMode(BUTTON_1, INPUT);
@@ -37,7 +37,7 @@ void setup()
   delay(1000);
 }
 
-void loop()
+void loop(void)
 {
   int action = 0;
 
