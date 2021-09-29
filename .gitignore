@@ -30,6 +30,12 @@
 *.exe
 *.out
 *.app
+
+# KiCad
+PCB/hunter/fp-info-cache
+*.kicad_pcb-bak
+
+# STVD
 Debug/
 Release/
 *.dep
