@@ -27,7 +27,7 @@ Debug=$(TargetFName)
 [Root]
 ElemType=Project
 PathName=hunter
-Child=Root.Source Files
+Child=Root.Hal
 Config.0=Root.Config.0
 Config.1=Root.Config.1
 
@@ -74,7 +74,7 @@ String.6.0=2021,9,23,22,3,19
 String.100.0=$(TargetFName)
 String.101.0=
 String.102.0=
-String.103.0=.\;
+String.103.0=.\;stm8_hal\src;
 
 [Root.Config.0.Settings.2]
 String.2.0=
@@ -154,7 +154,7 @@ Int.108=0
 String.6.0=2021,9,23,22,3,19
 String.100.0=$(TargetFName)
 String.101.0=
-String.103.0=.\;
+String.103.0=.\;stm8_hal\src;
 
 [Root.Config.1.Settings.2]
 String.2.0=
@@ -210,6 +210,169 @@ String.6.0=2021,9,23,22,3,19
 [Root.Config.1.Settings.8]
 String.2.0=Performing Custom Build on $(InputFile)
 String.6.0=2021,9,23,22,3,19
+
+[Root.Hal]
+ElemType=Folder
+PathName=Hal
+Child=Root.Hal.stm8_hal\src\stm8l10x_awu.c
+Next=Root.Source Files
+Config.0=Root.Hal.Config.0
+Config.1=Root.Hal.Config.1
+
+[Root.Hal.Config.0]
+Settings.0.0=Root.Hal.Config.0.Settings.0
+Settings.0.1=Root.Hal.Config.0.Settings.1
+Settings.0.2=Root.Hal.Config.0.Settings.2
+Settings.0.3=Root.Hal.Config.0.Settings.3
+
+[Root.Hal.Config.1]
+Settings.1.0=Root.Hal.Config.1.Settings.0
+Settings.1.1=Root.Hal.Config.1.Settings.1
+Settings.1.2=Root.Hal.Config.1.Settings.2
+Settings.1.3=Root.Hal.Config.1.Settings.3
+
+[Root.Hal.Config.0.Settings.0]
+String.6.0=2021,9,29,16,23,37
+String.8.0=Debug
+Int.0=0
+Int.1=0
+
+[Root.Hal.Config.0.Settings.1]
+String.2.0=Compiling $(InputFile)...
+String.3.0=cxstm8 +mods0 -customDebCompat -customOpt-no -customC-pp -customLst -l -istm8_hal\inc $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile)
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2021,9,25,13,27,0
+
+[Root.Hal.Config.0.Settings.2]
+String.2.0=Assembling $(InputFile)...
+String.3.0=castm8 -xx -l $(ToolsetIncOpts) -o$(IntermPath)$(InputName).$(ObjectExt) $(InputFile)
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2021,9,23,22,3,19
+
+[Root.Hal.Config.0.Settings.3]
+String.2.0=Performing Custom Build on $(InputFile)
+String.3.0=
+String.4.0=
+String.5.0=
+String.6.0=2021,9,23,22,3,19
+
+[Root.Hal.Config.1.Settings.0]
+String.6.0=2021,9,29,16,23,37
+String.8.0=Release
+Int.0=0
+Int.1=0
+
+[Root.Hal.Config.1.Settings.1]
+String.2.0=Compiling $(InputFile)...
+String.3.0=cxstm8 +mods0 -customC-pp $(ToolsetIncOpts) -cl$(IntermPath) -co$(IntermPath) $(InputFile) 
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2021,9,23,22,3,19
+
+[Root.Hal.Config.1.Settings.2]
+String.2.0=Assembling $(InputFile)...
+String.3.0=castm8 $(ToolsetIncOpts) -o$(IntermPath)$(InputName).$(ObjectExt) $(InputFile)
+String.4.0=$(IntermPath)$(InputName).$(ObjectExt)
+String.5.0=$(IntermPath)$(InputName).ls
+String.6.0=2021,9,23,22,3,19
+
+[Root.Hal.Config.1.Settings.3]
+String.2.0=Performing Custom Build on $(InputFile)
+String.3.0=
+String.4.0=
+String.5.0=
+String.6.0=2021,9,23,22,3,19
+
+[Root.Hal.stm8_hal\src\stm8l10x_awu.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_awu.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_beep.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_beep.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_beep.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_clk.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_clk.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_clk.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_comp.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_comp.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_comp.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_exti.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_exti.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_exti.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_flash.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_flash.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_flash.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_gpio.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_gpio.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_gpio.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_i2c.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_i2c.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_i2c.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_irtim.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_irtim.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_irtim.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_itc.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_itc.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_itc.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_iwdg.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_iwdg.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_iwdg.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_rst.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_rst.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_rst.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_spi.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_spi.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_spi.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_tim2.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_tim2.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_tim2.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_tim3.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_tim3.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_tim3.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_tim4.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_tim4.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_tim4.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_usart.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_usart.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_usart.c
+Next=Root.Hal.stm8_hal\src\stm8l10x_wfe.c
+
+[Root.Hal.stm8_hal\src\stm8l10x_wfe.c]
+ElemType=File
+PathName=stm8_hal\src\stm8l10x_wfe.c
 
 [Root.Source Files]
 ElemType=Folder
