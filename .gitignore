@@ -35,3 +35,5 @@ Release/
 *.dep
 *.wed
 .vscode/settings.json
+*.pdb
+*.wdb

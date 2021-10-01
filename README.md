@@ -93,6 +93,15 @@ Relevant pins on the arduino:
 |13    | SCLK   |                         |
 |2     | GDO0   | (Interrupt line 0, PD2) |
 
+Breadboard jumper cables:
+arduino-breadboard line
+2-21
+7-19
+10-15
+11-13
+12-17
+13-9
+
 ## STM8 pins
 
 |Arduino|Function|207K (Eval board)   |101F (Target)  |

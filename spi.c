@@ -38,19 +38,25 @@ uint8_t spi_send(uint8_t value)
 void cc1101_Select(void)
 {
   //bitClear(PORT_SPI_SS, BIT_SPI_SS);
-  // ! unsure if this is needed
+#if 0 // ! unsure if this is needed
+  digitalWrite(SPI_SS, 0);
+#endif
 }
 
 // Deselect (SPI) CC1101
 void cc1101_Deselect(void)
 {
   //bitSet(PORT_SPI_SS, BIT_SPI_SS);
-  // ! unsure if this is needed
+#if 0 // ! unsure if this is needed
+  digitalWrite(SPI_SS, 1);
+#endif
 }
 
 // Wait until SPI MISO line goes low
 void wait_Miso(void)
 {
   //while (bitRead(PORT_SPI_MISO, BIT_SPI_MISO));
-  // ! unsure if this is needed
+#if 0 // ! unsure if this is needed
+  while (digitalRead(SPI_MISO));
+#endif
 }
