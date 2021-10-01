@@ -4,6 +4,7 @@ enum // ! Arduino
 {
     INPUT,
     OUTPUT,
+    INPUT_PULLUP,
     HIGH,
     LOW
 };

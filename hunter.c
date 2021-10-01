@@ -20,19 +20,20 @@ enum
 void setup(void)
 {
   pinMode(LED_ACTIVITY, OUTPUT);
-  pinMode(BUTTON_1, INPUT);
-  pinMode(BUTTON_2, INPUT);
-  pinMode(BUTTON_3, INPUT);
-  pinMode(BUTTON_4, INPUT);
-  pinMode(BUTTON_5, INPUT);
-  pinMode(BUTTON_6, INPUT);
+  pinMode(BUTTON_1, INPUT_PULLUP);
+  pinMode(BUTTON_2, INPUT_PULLUP);
+  pinMode(BUTTON_3, INPUT_PULLUP);
+  pinMode(BUTTON_4, INPUT_PULLUP);
+  pinMode(BUTTON_5, INPUT_PULLUP);
+  pinMode(BUTTON_6, INPUT_PULLUP);
+#if 0
   digitalWrite(BUTTON_1, HIGH);
   digitalWrite(BUTTON_2, HIGH);
   digitalWrite(BUTTON_3, HIGH);
   digitalWrite(BUTTON_4, HIGH);
   digitalWrite(BUTTON_5, HIGH);
   digitalWrite(BUTTON_6, HIGH);
-
+#endif
   cc1101_init();
   delay(1000);
 }

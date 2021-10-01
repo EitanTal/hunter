@@ -47,7 +47,14 @@ void* arduinopin2port[] =
 
 void pinMode(int pin, int val)
 {
-    int mode = (val == OUTPUT) ? GPIO_Mode_Out_PP_High_Fast : GPIO_Mode_In_FL_No_IT;
+    int mode = 0;
+    if (val == OUTPUT)
+        mode = GPIO_Mode_Out_PP_High_Fast;
+    else if (val == INPUT)
+        mode = GPIO_Mode_In_FL_No_IT;
+    else if (val == INPUT_PULLUP)
+        mode = GPIO_Mode_In_PU_No_IT;
+
     GPIO_Init(arduinopin2port[pin], 1 << arduinopin2pin[pin], mode);
 }
 
