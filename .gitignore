@@ -37,3 +37,4 @@ Release/
 .vscode/settings.json
 *.pdb
 *.wdb
+*.spy
