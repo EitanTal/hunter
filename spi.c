@@ -4,6 +4,8 @@
 
 #include "stm8l10x.h"
 
+#define SS_CONTROL_SOFTWARE 1
+
 // Wait until SPI operation is terminated
 static void wait_Spi(void)
 {
@@ -18,10 +20,26 @@ static void wait_Spi(void)
  */
 void spi_init(void)
 {
+  pinMode(SPI_SS,   OUTPUT);
+  pinMode(SPI_MOSI, OUTPUT);
+  pinMode(SPI_SCK,  OUTPUT);
+  pinMode(SPI_MISO, INPUT);
+#if 0
+  digitalWrite(SPI_SS, 0);
+  digitalWrite(SPI_MOSI, 0);
+  digitalWrite(SPI_SCK, 0);
+#endif
+
+#if SS_CONTROL_SOFTWARE
+  //digitalWrite(SPI_SS, 1); // no need. it's the default
+#endif
+
   SPI_Init(SPI_FirstBit_MSB, SPI_BaudRatePrescaler_4, SPI_Mode_Master,
            SPI_CPOL_Low,   // ! unsure
            SPI_CPHA_1Edge, // ! unsure
-           SPI_Direction_2Lines_FullDuplex, SPI_NSS_Hard);
+           SPI_Direction_2Lines_FullDuplex, SPI_NSS_Soft);
+
+  SPI_Cmd(ENABLE);
 }
 
 /**
@@ -38,7 +56,7 @@ uint8_t spi_send(uint8_t value)
 void cc1101_Select(void)
 {
   //bitClear(PORT_SPI_SS, BIT_SPI_SS);
-#if 0 // ! unsure if this is needed
+#if SS_CONTROL_SOFTWARE // ! unsure if this is needed
   digitalWrite(SPI_SS, 0);
 #endif
 }
@@ -47,7 +65,7 @@ void cc1101_Select(void)
 void cc1101_Deselect(void)
 {
   //bitSet(PORT_SPI_SS, BIT_SPI_SS);
-#if 0 // ! unsure if this is needed
+#if SS_CONTROL_SOFTWARE // ! unsure if this is needed
   digitalWrite(SPI_SS, 1);
 #endif
 }

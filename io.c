@@ -1,6 +1,8 @@
 #include "stm8l10x.h"
 #include "io.h"
 
+#define USE_SET_1  0
+
 #if 1   // Nucleo
 
 uint8_t arduinopin2pin[] =
@@ -15,8 +17,13 @@ uint8_t arduinopin2pin[] =
     1,   // D7
     2,   // D8
     4,   // D9
-    4,   // D10 // also PE5
-    3,   // D11 // also PC6
+#if USE_SET_1
+    4,   // D10 // also PD4,  PE5
+    3,   // D11 // also PD3,  PC6
+#else
+    5,   // D10 // also PD4,  PE5
+    6,   // D11 // also PD3,  PC6
+#endif
     7,   // D12
     5,   // D13
     0,   // A0
@@ -35,15 +42,52 @@ void* arduinopin2port[] =
     GPIOA,   // D7
     GPIOA,   // D8
     GPIOC,   // D9
+#if USE_SET_1
     GPIOD,   // D10 // also PE5
     GPIOD,   // D11 // also PC6
+#else
+    GPIOE,   // D10 // also PE5
+    GPIOC,   // D11 // also PC6
+#endif
     GPIOC,   // D12
     GPIOC,   // D13
     GPIOB,   // A0
     GPIOB,   // A1
 };
 
+
+
 #endif
+
+void gpio_init(void)
+{
+
+    uint8_t other_pin[] = {
+    #if !USE_SET_1
+        4,   // D10 // also PD4,  PE5
+        3,   // D11 // also PD3,  PC6
+    #else
+        5,   // D10 // also PD4,  PE5
+        6,   // D11 // also PD3,  PC6
+    #endif
+    };
+
+    void* other_port[] = {
+    #if !USE_SET_1
+        GPIOD,   // D10 // also PE5
+        GPIOD,   // D11 // also PC6
+    #else
+        GPIOE,   // D10 // also PE5
+        GPIOC,   // D11 // also PC6
+    #endif
+    };
+
+    int i;
+    for (i=0;i<2;i++)
+    {
+        GPIO_Init(other_port[i], 1 << other_pin[i], GPIO_Mode_In_FL_No_IT);
+    }
+}
 
 void pinMode(int pin, int val)
 {
