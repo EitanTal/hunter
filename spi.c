@@ -77,6 +77,9 @@ void wait_Miso(void)
 {
   //while (bitRead(PORT_SPI_MISO, BIT_SPI_MISO));
 #if WAIT_MISO // ! unsure if this is needed
-  while (digitalRead(SPI_MISO) == 0);
+  int val = 0;
+	do {
+		val = digitalRead(SPI_MISO);
+  } while (val != 0);
 #endif
 }

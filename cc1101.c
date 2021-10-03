@@ -98,6 +98,7 @@ void cc1101_cmdStrobe(uint8_t cmd)
  * Return:
  * 	Data byte returned by the CC1101 IC
  */
+ extern uint8_t SPI_ReceiveData(void);
 uint8_t cc1101_readReg(uint8_t regAddr, uint8_t regType) 
 {
   uint8_t addr, val;
@@ -107,8 +108,11 @@ uint8_t cc1101_readReg(uint8_t regAddr, uint8_t regType)
   wait_Miso();                          // Wait until MISO goes low
   spi_send(addr);                       // Send register address
   val = spi_send(0x00);                 // Read result
+  
+	val = SPI_ReceiveData(); // Read again. stupid hardware. // !
   cc1101_Deselect();                    // Deselect CC1101
 
+  val = SPI_ReceiveData(); // Read again. stupid hardware. // !
   return val;
 }
 
@@ -176,7 +180,7 @@ void cc1101_setDefaultRegs(void)
 }
 
 /**
- * spi_init
+ * CC1101 init
  * 
  * Initialize CC1101
  */

@@ -53,8 +53,8 @@ void loop(void)
   if (digitalRead(BUTTON_5) == LOW) action = DATA_FAN_2;
   if (digitalRead(BUTTON_6) == LOW) action = DATA_FAN_1;
 
-  //if (action != 0)
-	if (0)
+  if (action != 0)
+	//if (0)
   {
 		uint8_t *tx_buf;
 		int i;
