@@ -114,18 +114,3 @@ int digitalRead(int port_and_pin)
 {
     return !!GPIO_ReadInputDataBit(arduinopin2port[port_and_pin], (1 << arduinopin2pin[port_and_pin]));
 }
-
-void bitClear(int port, int pin)
-{
-
-}
-
-void bitSet(int port, int pin)
-{
-
-}
-
-int bitRead(int port, int pin)
-{
-
-}

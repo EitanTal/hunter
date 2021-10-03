@@ -8,7 +8,7 @@
 
 int getGDO0state(void)
 {
-  bitRead(PORT_GDO0, BIT_GDO0);
+  return digitalRead(2);
 }
 
 void wait_GDO0_high(void)
