@@ -35,6 +35,7 @@ void setup(void)
   digitalWrite(BUTTON_6, HIGH);
 #endif
   cc1101_init();
+
   delay(1000);
 }
 

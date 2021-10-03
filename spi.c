@@ -5,12 +5,14 @@
 #include "stm8l10x.h"
 
 #define SS_CONTROL_SOFTWARE 1
+#define WAIT_MISO  1
 
 // Wait until SPI operation is terminated
 static void wait_Spi(void)
 {
   // ! Replace arduino
   //while(!(SPSR & _BV(SPIF))) {;}
+  while (!SPI_GetFlagStatus(SPI_FLAG_BSY)) {;}
 }
 
 /**
@@ -74,7 +76,7 @@ void cc1101_Deselect(void)
 void wait_Miso(void)
 {
   //while (bitRead(PORT_SPI_MISO, BIT_SPI_MISO));
-#if 0 // ! unsure if this is needed
-  while (digitalRead(SPI_MISO));
+#if WAIT_MISO // ! unsure if this is needed
+  while (digitalRead(SPI_MISO) == 0);
 #endif
 }

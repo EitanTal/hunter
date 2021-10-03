@@ -408,6 +408,7 @@ void cc1101_setDefaultRegs(void)
  */
 void cc1101_init(void) 
 {
+	int i,j,k;
 	uint8_t PA_TABLE[] = {0x00, PA_POWER_MINUS_0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
   spi_init();                           // Initialize SPI interface
   //setClockDivider(SPI_CLOCK_DIV16);
@@ -439,6 +440,19 @@ void cc1101_init(void)
   cc1101_writeBurstReg(CC1101_PATABLE, PA_TABLE, 8);
 
   disableAddressCheck();
+#if 1
+/*
+Serial.print("CC1101_PARTNUM ");
+Serial.println(cc1101.readReg(CC1101_PARTNUM, CC1101_STATUS_REGISTER));
+Serial.print("CC1101_VERSION ");
+Serial.println(cc1101.readReg(CC1101_VERSION, CC1101_STATUS_REGISTER));
+Serial.print("CC1101_MARCSTATE ");
+Serial.println(cc1101.readReg(CC1101_MARCSTATE, CC1101_STATUS_REGISTER) & 0x1f);
+*/
+ i = cc1101_readReg(CC1101_PARTNUM, CC1101_STATUS_REGISTER);
+ j = cc1101_readReg(CC1101_VERSION, CC1101_STATUS_REGISTER);
+ k = cc1101_readReg(CC1101_MARCSTATE, CC1101_STATUS_REGISTER);
+#endif
 }
 
 /**
