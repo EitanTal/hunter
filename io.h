@@ -4,9 +4,16 @@ enum // ! Arduino
 {
     INPUT,
     OUTPUT,
-    HIGH,
-    LOW
+    INPUT_PULLUP
 };
+
+enum
+{
+    LOW,
+    HIGH
+};
+
+void gpio_init(void);
 
 void pinMode(int pin, int val);
 

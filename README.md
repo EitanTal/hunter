@@ -71,7 +71,7 @@ Relevant pins on the pinheader of the eval board of CC1101:
 |---------|-------|--|--------|---------|
 |  Brown  | VCC   |  | VCC    | Red     |
 |  Orange | SCK   |  | MOSI   | Yellow  |
-|  Green  | ND?   |  | MISO   | Blue    |
+|  Green  | GDO2  |  | MISO   | Blue    |
 |  Purple | GDO0  |  | CSN    | Grey    |
 |  White  | GND   |  | GND    | Black   |
 
@@ -85,10 +85,29 @@ The pins as they connect to my breadboard:
 |         |       |  |   GDO0 |(Purple) |
 
 Relevant pins on the arduino:
-|Number|Function|Comment|
-|------|--------|-------|
+|Number|Function|Comment                  |
+|------|--------|-------------------------|
 |10    | SS     | (Active low)            |
 |11    | MOSI   |                         |
 |12    | MISO   |                         |
 |13    | SCLK   |                         |
 |2     | GDO0   | (Interrupt line 0, PD2) |
+
+Breadboard jumper cables:
+arduino-breadboard line
+2-21
+7-19
+10-15
+11-13
+12-17
+13-9
+
+## STM8 pins
+
+|Arduino|Function|207K (Eval board)   |101F (Target)  |
+|-------|--------|--------------------|---------------|
+|10     | SS     |PE5 (D10)           |PB4            |
+|11     | MOSI   |PC6 (D11)           |PB6            |
+|12     | MISO   |PC7 (D12)           |PB7            |
+|13     | SCLK   |PC5 (D13)           |PB5            |
+|2      | GDO0   |PD0 (D2)            |PC0            |

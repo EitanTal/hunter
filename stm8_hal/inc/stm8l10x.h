@@ -1235,6 +1235,7 @@ USART_TypeDef;
 #define GPIOB_BaseAddress       0x5005
 #define GPIOC_BaseAddress       0x500A
 #define GPIOD_BaseAddress       0x500F
+#define GPIOE_BaseAddress       0x5014
 
 #define FLASH_BaseAddress       0x5050
 
@@ -1281,6 +1282,7 @@ USART_TypeDef;
 #define GPIOB ((GPIO_TypeDef *) GPIOB_BaseAddress)
 #define GPIOC ((GPIO_TypeDef *) GPIOC_BaseAddress)
 #define GPIOD ((GPIO_TypeDef *) GPIOD_BaseAddress)
+#define GPIOE ((GPIO_TypeDef *) GPIOE_BaseAddress)
 #define FLASH ((FLASH_TypeDef *) FLASH_BaseAddress)
 #define EXTI ((EXTI_TypeDef *) EXTI_BaseAddress)
 #define RST ((RST_TypeDef *) RST_BaseAddress)

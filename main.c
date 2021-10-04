@@ -1,10 +1,12 @@
-/* MAIN.C file
- * 
- * Copyright (c) 2002-2005 STMicroelectronics
- */
-
+#include "hunter.h"
+#include "io.h"
 
 main()
 {
-	while (1);
+	gpio_init();
+	setup();
+	while (1)
+	{
+		loop();
+	}
 }
