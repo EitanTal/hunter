@@ -1,70 +1,59 @@
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 
 /////////////////////////////////////////////////////////////
 
-uint32_t tx_out = 0; // ! No 64bit int!
+uint8_t tx_out[5] = {0};
 static int tx_bit_offset = 0;
-static bool is_mirrored = false;
 
-static void my_tx_bit(uint8_t a);
+static void push_symbol(uint8_t a);
 static uint8_t mirror(uint8_t a);
 
 /////////////////////////////////////////////////////////////
 
 void hunter_data_clear(void)
 {
-  tx_out = 0;
+  memset(&tx_out, 0, sizeof(tx_out));
   tx_bit_offset = 0;
-  is_mirrored = false;
 }
 
 void hunter_data_add_bits(uint8_t a, int bits)
 {
-	int i;
-  a = a << 8-bits;
+  int i;
+  a = a << 8 - bits;
   for (i = 0; i < bits; i++)
   {
-    my_tx_bit(a & 0x80);
+    push_symbol(a & 0x80);
     a = a << 1;
   }
 }
 
-uint8_t* hunter_data_get_buffer(void)
+uint8_t *hunter_data_get_buffer(void)
 {
-	int i;
-  uint8_t * tx_buf = (uint8_t*)&tx_out;
-
-  if (!is_mirrored)
-  {
-    for(i = 0; i < 5; i++)
-    {
-      tx_buf[i] = mirror(tx_buf[i]);
-    }
-    is_mirrored = true;
-  }
+  int i;
+  uint8_t *tx_buf = (uint8_t *)&tx_out;
 
   return tx_buf;
 }
 
 /////////////////////////////////////////////////////////////
 
-static void my_tx_bit(uint8_t a)
+static void push_bit(uint8_t bit)
 {
-  uint32_t tmp = (a ? 0b110 : 0b100);  // ! These are Mirrored. // ! uint64_t not supported
-  tmp = tmp << tx_bit_offset;
-  tx_bit_offset += 3;
-  tx_out |= tmp;
+  if (bit)
+  {
+    uint8_t byte_index = tx_bit_offset / 8;
+    uint8_t bit_index = tx_bit_offset % 8;
+    uint8_t actual_bit_index = 7 - bit_index;
+    tx_out[byte_index] |= (1 << actual_bit_index);
+  }
+  tx_bit_offset++;
 }
 
-static uint8_t mirror(uint8_t a)
+static void push_symbol(uint8_t a)
 {
-	int i;
-  uint8_t result = 0;
-  for (i = 0; i < 8; i++)
-  {
-    result |= (!!(a & 0x80)) << i;
-    a = a << 1;
-  }
-  return result;
+  push_bit(0);
+  push_bit(a ? 1 : 0);
+  push_bit(1);
 }
