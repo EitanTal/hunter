@@ -114,8 +114,8 @@ void delay(int time)
 {
     // ! Arduino
     int i;
-    for (i = 0; i < time; i += 100)
+    for (i = 0; i < time; i++ )
     {
-        delayMicroseconds(100);
+        delayMicroseconds(75);
     }
 }

@@ -4,8 +4,8 @@
 
 /////////////////////////////////////////////////////////////
 
-uint8_t tx_out[5] = {0};
-static int tx_bit_offset = 0;
+static uint8_t tx_out[5] = {0};
+static uint8_t tx_bit_offset = 0;
 
 static void push_symbol(uint8_t a);
 static uint8_t mirror(uint8_t a);
@@ -14,7 +14,12 @@ static uint8_t mirror(uint8_t a);
 
 void hunter_data_clear(void)
 {
-  memset(&tx_out, 0, sizeof(tx_out));
+  //memset(&tx_out, 0, sizeof(tx_out));
+	tx_out[0] = 0;
+	tx_out[1] = 0;
+	tx_out[2] = 0;
+	tx_out[3] = 0;
+	tx_out[4] = 0;
   tx_bit_offset = 0;
 }
 
