@@ -1,4 +1,4 @@
-(module MyBatteryConnector (layer F.Cu) (tedit 6153C45A)
+(module MyBatteryConnector (layer F.Cu) (tedit 615B77AE)
   (descr "Mounting Hole 2.5mm")
   (tags "mounting hole 2.5mm")
   (attr virtual)
@@ -12,5 +12,5 @@
     (effects (font (size 1 1) (thickness 0.15)))
   )
   (pad + thru_hole oval (at 0 0) (size 5.4864 2.1082) (drill oval 3.3274 0.7874 (offset -0.5588 0)) (layers *.Cu *.Mask))
-  (pad - thru_hole oval (at 10.922 0) (size 5.4864 2.1082) (drill oval 3.3274 0.7874 (offset 0.5588 0)) (layers *.Cu *.Mask))
+  (pad - thru_hole oval (at 10.668 0) (size 5.4864 2.1082) (drill oval 3.3274 0.7874 (offset 0.5588 0)) (layers *.Cu *.Mask))
 )
