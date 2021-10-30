@@ -25,18 +25,18 @@ F 3 "" H 1850 5300 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push SW1
+L Switch:SW_MEC_5E SW1
 U 1 1 61519882
-P 7050 1200
-F 0 "SW1" H 7050 1485 50  0000 C CNN
-F 1 "SW_Light" H 7050 1394 50  0000 C CNN
-F 2 "Button_Switch_SMD:SW_SPST_Omron_B3FS-100xP" H 7050 1400 50  0001 C CNN
-F 3 "~" H 7050 1400 50  0001 C CNN
-	1    7050 1200
+P 7100 1150
+F 0 "SW1" H 7100 1435 50  0000 C CNN
+F 1 "SW_Light" H 7100 1344 50  0000 C CNN
+F 2 "Button_Switch_SMD:SW_SPST_Omron_B3FS-100xP" H 7100 1350 50  0001 C CNN
+F 3 "~" H 7100 1350 50  0001 C CNN
+	1    7100 1150
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push SW2
+L Switch:SW_MEC_5E SW2
 U 1 1 6151A26D
 P 6600 1600
 F 0 "SW2" H 6600 1885 50  0000 C CNN
@@ -47,7 +47,7 @@ F 3 "~" H 6600 1800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push SW3
+L Switch:SW_MEC_5E SW3
 U 1 1 6151AB9D
 P 7650 1550
 F 0 "SW3" H 7650 1835 50  0000 C CNN
@@ -58,7 +58,7 @@ F 3 "~" H 7650 1750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push SW4
+L Switch:SW_MEC_5E SW4
 U 1 1 6151B5C8
 P 7050 3350
 F 0 "SW4" H 7050 3635 50  0000 C CNN
@@ -69,7 +69,7 @@ F 3 "~" H 7050 3550 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push SW5
+L Switch:SW_MEC_5E SW5
 U 1 1 6151C131
 P 6600 3750
 F 0 "SW5" H 6600 4035 50  0000 C CNN
@@ -80,7 +80,7 @@ F 3 "~" H 6600 3950 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Switch:SW_Push SW6
+L Switch:SW_MEC_5E SW6
 U 1 1 6151D401
 P 7600 3750
 F 0 "SW6" H 7600 4035 50  0000 C CNN
@@ -116,8 +116,6 @@ Wire Wire Line
 	2000 800  5950 800 
 Wire Wire Line
 	1900 700  6050 700 
-Wire Wire Line
-	7300 3900 7300 3750
 $Comp
 L power:GND #PWR0102
 U 1 1 61535B0C
@@ -132,12 +130,12 @@ $EndComp
 $Comp
 L power:GND #PWR0103
 U 1 1 61536017
-P 7250 1200
-F 0 "#PWR0103" H 7250 950 50  0001 C CNN
-F 1 "GND" H 7255 1027 50  0000 C CNN
-F 2 "" H 7250 1200 50  0001 C CNN
-F 3 "" H 7250 1200 50  0001 C CNN
-	1    7250 1200
+P 7300 1150
+F 0 "#PWR0103" H 7300 900 50  0001 C CNN
+F 1 "GND" H 7305 977 50  0000 C CNN
+F 2 "" H 7300 1150 50  0001 C CNN
+F 3 "" H 7300 1150 50  0001 C CNN
+	1    7300 1150
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -184,8 +182,6 @@ F 3 "" H 6800 3750 50  0001 C CNN
 	1    6800 3750
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	7400 3750 7300 3750
 Wire Wire Line
 	7300 1550 7450 1550
 $Comp
@@ -762,14 +758,6 @@ $EndComp
 Wire Wire Line
 	4300 2250 7450 2250
 Wire Wire Line
-	5950 800  5950 1600
-Wire Wire Line
-	5950 1600 6400 1600
-Wire Wire Line
-	6050 700  6050 1200
-Wire Wire Line
-	6050 1200 6850 1200
-Wire Wire Line
 	5850 900  5850 1800
 Wire Wire Line
 	5850 1800 7300 1800
@@ -784,9 +772,7 @@ Wire Wire Line
 Wire Wire Line
 	4300 1750 5400 1750
 Wire Wire Line
-	5400 1750 5400 3350
-Wire Wire Line
-	5400 3350 6850 3350
+	5400 1750 5400 3250
 Wire Wire Line
 	5300 3750 6400 3750
 Wire Wire Line
@@ -818,10 +804,6 @@ F 3 "" H 2500 1650 60  0000 C CNN
 	1    2500 1650
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	2100 2350 2500 2350
-Wire Wire Line
-	2100 900  2100 2350
 NoConn ~ 2500 1850
 NoConn ~ 2500 1950
 Wire Wire Line
@@ -836,10 +818,6 @@ Wire Wire Line
 	2000 2450 2500 2450
 Wire Wire Line
 	2000 800  2000 2450
-Wire Wire Line
-	2500 2150 1900 2150
-Wire Wire Line
-	1900 2150 1900 700 
 NoConn ~ 2500 2250
 $Comp
 L power:+3V0 #VBAT0101
@@ -852,4 +830,66 @@ F 3 "" H 800 7000 50  0001 C CNN
 	1    800  7000
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	7300 1050 7300 1150
+Connection ~ 7300 1150
+Wire Wire Line
+	7850 1450 7850 1550
+Connection ~ 7850 1550
+Wire Wire Line
+	6800 1500 6800 1600
+Connection ~ 6800 1600
+Wire Wire Line
+	7800 3650 7800 3750
+Connection ~ 7800 3750
+Wire Wire Line
+	7250 3350 7250 3250
+Connection ~ 7250 3350
+Wire Wire Line
+	6800 3650 6800 3750
+Connection ~ 6800 3750
+Wire Wire Line
+	2500 2150 2100 2150
+Wire Wire Line
+	2100 2150 2100 900 
+Wire Wire Line
+	1900 2350 2500 2350
+Wire Wire Line
+	1900 700  1900 2350
+$Comp
+L Mechanical:MountingHole H1
+U 1 1 6188D2ED
+P 9400 1450
+F 0 "H1" H 9500 1496 50  0000 L CNN
+F 1 "MountingHole" H 9500 1405 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2mm" H 9400 1450 50  0001 C CNN
+F 3 "~" H 9400 1450 50  0001 C CNN
+	1    9400 1450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H2
+U 1 1 6188DD66
+P 10250 1450
+F 0 "H2" H 10350 1496 50  0000 L CNN
+F 1 "MountingHole" H 10350 1405 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2mm" H 10250 1450 50  0001 C CNN
+F 3 "~" H 10250 1450 50  0001 C CNN
+	1    10250 1450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6050 700  6050 1150
+Wire Wire Line
+	6050 1150 6900 1150
+Wire Wire Line
+	5950 800  5950 1500
+Wire Wire Line
+	5950 1500 6400 1500
+Wire Wire Line
+	6850 3250 5400 3250
+Wire Wire Line
+	7300 3650 7400 3650
+Wire Wire Line
+	7300 3650 7300 3900
 $EndSCHEMATC
