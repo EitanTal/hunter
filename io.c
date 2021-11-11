@@ -34,6 +34,7 @@ uint8_t arduinopin2pin[] =
     5,   // Z3
     6,   // Z4
     7,   // Z5
+    0,   // Z6
 };
 
 void* arduinopin2port[] =
@@ -65,10 +66,8 @@ void* arduinopin2port[] =
     GPIOB,   // Z3
     GPIOB,   // Z4
     GPIOB,   // Z5
-
+    GPIOC,   // Z6
 };
-
-
 
 #endif
 
