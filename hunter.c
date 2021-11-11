@@ -3,6 +3,7 @@
 #include "main.h"
 #include "io.h"
 #include "time.h"
+#include "stm8l10x_clk.h"
 
 #if 0
 enum
@@ -38,6 +39,10 @@ enum
 
 void setup(void)
 {
+#if 1
+  CLK_PeripheralClockConfig(CLK_Peripheral_SPI, ENABLE);
+#endif
+
 #if 0
   pinMode(LED_ACTIVITY, OUTPUT);
 #else
