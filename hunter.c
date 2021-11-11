@@ -40,6 +40,10 @@ void setup(void)
 {
 #if 0
   pinMode(LED_ACTIVITY, OUTPUT);
+#else
+	pinMode(MY_LED_11, OUTPUT);
+	pinMode(MY_LED_2, OUTPUT);
+#endif
   pinMode(BUTTON_1, INPUT_PULLUP);
   pinMode(BUTTON_2, INPUT_PULLUP);
   pinMode(BUTTON_3, INPUT_PULLUP);
@@ -57,24 +61,14 @@ void setup(void)
   cc1101_init();
 
   delay(1000);
-#else
-	pinMode(MY_LED_11, OUTPUT); // D2
-	pinMode(MY_LED_2, OUTPUT);
-	
-  pinMode(BUTTON_1, INPUT_PULLUP);
-  pinMode(BUTTON_2, INPUT_PULLUP);
-  pinMode(BUTTON_3, INPUT_PULLUP);
-  pinMode(BUTTON_4, INPUT_PULLUP);
-  pinMode(BUTTON_5, INPUT_PULLUP);
-  pinMode(BUTTON_6, INPUT_PULLUP);
-	
-#endif
 }
 
 void loop(void)
 {
-#if 0
+#if 1
   int action = 0;
+
+  #define LED_ACTIVITY  MY_LED_11
 
   digitalWrite(LED_ACTIVITY, LOW);
   delay(10); // ! replace with low-power
@@ -82,7 +76,7 @@ void loop(void)
   if (digitalRead(BUTTON_1) == LOW) action = DATA_LIGHT; 
   if (digitalRead(BUTTON_2) == LOW) action = DATA_FAN_OFF;
   if (digitalRead(BUTTON_3) == LOW) action = DATA_FAN_REVERSE;
-  if (digitalRead(BUTTON_4) == LOW) action = DATA_FAN_3;
+  //if (digitalRead(BUTTON_4) == LOW) action = DATA_FAN_3;
   if (digitalRead(BUTTON_5) == LOW) action = DATA_FAN_2;
   if (digitalRead(BUTTON_6) == LOW) action = DATA_FAN_1;
 

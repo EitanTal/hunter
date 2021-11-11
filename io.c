@@ -93,13 +93,22 @@ void gpio_init(void)
         GPIOC,   // D11 // also PC6
     #endif
     };
+#else
+    uint8_t other_pin[] = {
+        4,   // CSN
+        6,   // MOSI
+    };
 
+    void* other_port[] = {
+        GPIOB,   // CSN
+        GPIOB,   // MOSI
+    };
+#endif
     int i;
     for (i=0;i<2;i++)
     {
         GPIO_Init(other_port[i], 1 << other_pin[i], GPIO_Mode_In_FL_No_IT);
     }
-#endif
 }
 
 void pinMode(int pin, int val)
