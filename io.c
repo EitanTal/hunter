@@ -28,6 +28,12 @@ uint8_t arduinopin2pin[] =
     5,   // D13
     0,   // A0
     1,   // A1
+    2,   // Z0
+    3,   // Z1
+    4,   // Z2
+    5,   // Z3
+    6,   // Z4
+    7,   // Z5
 };
 
 void* arduinopin2port[] =
@@ -53,6 +59,13 @@ void* arduinopin2port[] =
     GPIOC,   // D13
     GPIOB,   // A0
     GPIOB,   // A1
+    GPIOB,   // Z0
+    GPIOB,   // Z1
+    GPIOB,   // Z2
+    GPIOB,   // Z3
+    GPIOB,   // Z4
+    GPIOB,   // Z5
+
 };
 
 
@@ -61,7 +74,7 @@ void* arduinopin2port[] =
 
 void gpio_init(void)
 {
-
+#if 0
     uint8_t other_pin[] = {
     #if !USE_SET_1
         4,   // D10 // also PD4,  PE5
@@ -87,6 +100,7 @@ void gpio_init(void)
     {
         GPIO_Init(other_port[i], 1 << other_pin[i], GPIO_Mode_In_FL_No_IT);
     }
+#endif
 }
 
 void pinMode(int pin, int val)

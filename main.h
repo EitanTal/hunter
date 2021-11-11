@@ -5,7 +5,10 @@ enum // ! Arduino
     PINB,
     PIND,
     PORTB,
-    PIN_A0 = 14
+    PIN_A0 = 14,
+    PIN_A1 = 15,
+    PIN_Z0 = 16,
+    PIN_Z1 = 17
 };
 
 #define SPI_SS   10     // PB2 = SPI_SS
