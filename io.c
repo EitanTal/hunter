@@ -119,7 +119,7 @@ void pinMode(int pin, int val)
     else if (val == INPUT)
         mode = GPIO_Mode_In_FL_No_IT;
     else if (val == INPUT_PULLUP)
-        mode = GPIO_Mode_In_PU_No_IT;
+        mode = GPIO_Mode_In_PU_IT;
 
     GPIO_Init(arduinopin2port[pin], 1 << arduinopin2pin[pin], mode);
 }

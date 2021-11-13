@@ -4,6 +4,7 @@
 #include "io.h"
 #include "time.h"
 #include "stm8l10x_clk.h"
+#include "stm8l10x_exti.h"
 
 enum
 {
@@ -18,8 +19,7 @@ enum
 enum
 {
 	MY_LED_11 = 2, // Arduino D2 equivalent
-	MY_LED_2  = 6,  // Arduino D6 equivalent
-  LED_ACTIVITY = MY_LED_11
+	MY_LED_2  = 6  // Arduino D6 equivalent
 };
 
 enum
@@ -30,11 +30,21 @@ enum
 
 ////////////////////////////////////////////////////////
 
+
+static void WFI(void)
+{
+	__asm("WFI");
+}
+
+static void ENABLE_INTERRUPTS(void)
+{
+	__asm("RIM");
+}
+
 void setup(void)
 {
   CLK_PeripheralClockConfig(CLK_Peripheral_SPI, ENABLE);
   
-
 	pinMode(MY_LED_11, OUTPUT);
 	pinMode(MY_LED_2, OUTPUT);
 
@@ -45,9 +55,18 @@ void setup(void)
   pinMode(BUTTON_FAN_UP, INPUT_PULLUP);
   pinMode(BUTTON_FAN_DOWN, INPUT_PULLUP);
 
+  EXTI_SetPortSensitivity(EXTI_Port_B, EXTI_Trigger_Falling); // B2
+  EXTI_SetPinSensitivity(EXTI_Pin_0, EXTI_Trigger_Falling);   // B0
+  EXTI_SetPinSensitivity(EXTI_Pin_1, EXTI_Trigger_Falling);   // C1
+  EXTI_SetPinSensitivity(EXTI_Pin_2, EXTI_Trigger_Falling);   // C2
+  EXTI_SetPinSensitivity(EXTI_Pin_3, EXTI_Trigger_Falling);   // B3
+  EXTI_SetPinSensitivity(EXTI_Pin_4, EXTI_Trigger_Falling);   // C4
+
   cc1101_init();
 
   delay(1000);
+
+  ENABLE_INTERRUPTS();
 }
 
 void send_action(int action, int ok)
@@ -87,13 +106,15 @@ int speed2action(int8_t new_speed)
   return DATA_FAN_OFF;
 }
 
+
 void loop(void)
 {
   static int8_t current_fan_speed = 0;
 
   digitalWrite(MY_LED_11, LOW);
   digitalWrite(MY_LED_2, LOW);
-  delay(10); // ! replace with low-power
+  delay(100);
+	WFI();
 
   if (digitalRead(BUTTON_LIGHT) == LOW)
   {
