@@ -22,11 +22,18 @@ enum
   LED_ACTIVITY = MY_LED_11
 };
 
+enum
+{
+  COMMAND_ERROR,
+  COMMAND_OK
+};
+
 ////////////////////////////////////////////////////////
 
 void setup(void)
 {
   CLK_PeripheralClockConfig(CLK_Peripheral_SPI, ENABLE);
+  
 
 	pinMode(MY_LED_11, OUTPUT);
 	pinMode(MY_LED_2, OUTPUT);
@@ -43,7 +50,7 @@ void setup(void)
   delay(1000);
 }
 
-void send_action(int action)
+void send_action(int action, int ok)
 {
   uint8_t *tx_buf;
   int i;
@@ -52,36 +59,45 @@ void send_action(int action)
   hunter_data_add_bits(action, 8);
   tx_buf = hunter_data_get_buffer();
 
-  digitalWrite(LED_ACTIVITY, HIGH);
   for (i = 0; i < 16; i++)
   {
-    digitalWrite(LED_ACTIVITY, ((i%2) ? HIGH : LOW));
+    if (ok == COMMAND_OK)
+    {
+      digitalWrite(MY_LED_11, ((i%2) ? HIGH : LOW));
+      digitalWrite(MY_LED_2, ((i%2) ? HIGH : LOW));
+    }
+    else
+    {
+      digitalWrite(MY_LED_11, (((i/4)%2) ? HIGH : LOW));
+      digitalWrite(MY_LED_2, (((i/4)%2) ? LOW : HIGH));
+    }
     cc1101_sendData(tx_buf, SIZEOF_HUNTER_DATA_BUFFER);
     delay(10);
   }
 }
 
-void refresh_speed(int8_t new_speed)
+int speed2action(int8_t new_speed)
 {
   switch (new_speed)
   {
-    case 0:    send_action(DATA_FAN_OFF);   break;
-    case 1:    send_action(DATA_FAN_3);     break;
-    case 2:    send_action(DATA_FAN_2);     break;
-    case 3:    send_action(DATA_FAN_1);     break;
+    case 1:    return DATA_FAN_3;
+    case 2:    return DATA_FAN_2;
+    case 3:    return DATA_FAN_1;
   }
+  return DATA_FAN_OFF;
 }
 
 void loop(void)
 {
   static int8_t current_fan_speed = 0;
 
-  digitalWrite(LED_ACTIVITY, LOW);
+  digitalWrite(MY_LED_11, LOW);
+  digitalWrite(MY_LED_2, LOW);
   delay(10); // ! replace with low-power
 
   if (digitalRead(BUTTON_LIGHT) == LOW)
   {
-    send_action(DATA_LIGHT);
+    send_action(DATA_LIGHT, COMMAND_OK);
   }
 #if 0 // No support for light-up / light-down
   if (digitalRead(BUTTON_LIGHT_UP) == LOW) action = DATA_FAN_OFF;
@@ -97,21 +113,35 @@ void loop(void)
 #endif
   if ((digitalRead(BUTTON_FAN_UP) == LOW) && (digitalRead(BUTTON_FAN_DOWN) == LOW))
   {
-    send_action(DATA_FAN_REVERSE);
+    send_action(DATA_FAN_REVERSE, COMMAND_OK);
   }
   else
   {
     if (digitalRead(BUTTON_FAN_UP) == LOW)
     {
       current_fan_speed++;
-      if (current_fan_speed > 3) current_fan_speed = 3;
-      refresh_speed(current_fan_speed);
+      if (current_fan_speed > 3) 
+      {
+        current_fan_speed = 3;
+        send_action(speed2action(current_fan_speed), COMMAND_ERROR);
+      }
+      else
+      {
+        send_action(speed2action(current_fan_speed), COMMAND_OK);
+      }
     }
     if (digitalRead(BUTTON_FAN_DOWN) == LOW)
     {
       current_fan_speed--;
-      if (current_fan_speed < 0) current_fan_speed = 0;
-      refresh_speed(current_fan_speed);
+      if (current_fan_speed < 0)
+      {
+        current_fan_speed = 0;
+        send_action(speed2action(current_fan_speed), COMMAND_ERROR);
+      }
+      else
+      {
+        send_action(speed2action(current_fan_speed), COMMAND_OK);
+      }
     } 
   }
 }
