@@ -8,7 +8,7 @@
 
 int getGDO0state(void)
 {
-  return digitalRead(2);
+  return digitalRead(GDO0);
 }
 
 void wait_GDO0_high(void)

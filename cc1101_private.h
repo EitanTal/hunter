@@ -158,9 +158,15 @@ enum
 #define CC1101_DEFVAL_FREQ1_304  0xB1        // Frequency Control Word, Middle Byte
 #define CC1101_DEFVAL_FREQ0_304  0x3B        // Frequency Control Word, Low Byte
 // Carrier frequency = 302 MHz
+#if 0
 #define CC1101_DEFVAL_FREQ2_302  0x0B        // Frequency Control Word, High Byte
 #define CC1101_DEFVAL_FREQ1_302  0xA1        // Frequency Control Word, Middle Byte
 #define CC1101_DEFVAL_FREQ0_302  0x15        // Frequency Control Word, Low Byte
+#else
+#define CC1101_DEFVAL_FREQ2_302  0x0C        // Frequency Control Word, High Byte
+#define CC1101_DEFVAL_FREQ1_302  0x27        // Frequency Control Word, Middle Byte
+#define CC1101_DEFVAL_FREQ0_302  0x60        // Frequency Control Word, Low Byte
+#endif
 
 //#define CC1101_DEFVAL_MDMCFG4    0xE5        // Modem Configuration
 //#define CC1101_DEFVAL_MDMCFG3    0xC3        // Modem Configuration
