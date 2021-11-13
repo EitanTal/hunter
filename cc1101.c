@@ -8,11 +8,7 @@
 
 int getGDO0state(void)
 {
-  #if 0
-  return digitalRead(2); // D2
-  #else
-  return digitalRead(GDO0); // Z6
-  #endif
+  return digitalRead(GDO0);
 }
 
 void wait_GDO0_high(void)
