@@ -75,7 +75,7 @@ void send_action(int action, int ok)
 {
   uint8_t *tx_buf;
   int i;
-  int loop_count = (action == BUTTON_LIGHT) ? 5 : 16; // Light button requires less repetitions, or else it is counted as a double click.
+  int loop_count = (action == DATA_LIGHT) ? 5 : 16; // Light button requires less repetitions, or else it is counted as a double click.
   hunter_data_clear();
   hunter_data_add_bits(0x0F, 5);
   hunter_data_add_bits(action, 8);
