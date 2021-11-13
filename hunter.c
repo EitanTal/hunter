@@ -43,35 +43,75 @@ void setup(void)
   delay(1000);
 }
 
+void send_action(int action)
+{
+  uint8_t *tx_buf;
+  int i;
+  hunter_data_clear();
+  hunter_data_add_bits(0x0F, 5);
+  hunter_data_add_bits(action, 8);
+  tx_buf = hunter_data_get_buffer();
+
+  digitalWrite(LED_ACTIVITY, HIGH);
+  for (i = 0; i < 16; i++)
+  {
+    digitalWrite(LED_ACTIVITY, ((i%2) ? HIGH : LOW));
+    cc1101_sendData(tx_buf, SIZEOF_HUNTER_DATA_BUFFER);
+    delay(10);
+  }
+}
+
+void refresh_speed(int8_t new_speed)
+{
+  switch (new_speed)
+  {
+    case 0:    send_action(DATA_FAN_OFF);   break;
+    case 1:    send_action(DATA_FAN_3);     break;
+    case 2:    send_action(DATA_FAN_2);     break;
+    case 3:    send_action(DATA_FAN_1);     break;
+  }
+}
+
 void loop(void)
 {
-  int action = 0;
+  static int8_t current_fan_speed = 0;
 
   digitalWrite(LED_ACTIVITY, LOW);
   delay(10); // ! replace with low-power
 
-  if (digitalRead(BUTTON_LIGHT) == LOW) action = DATA_LIGHT; 
+  if (digitalRead(BUTTON_LIGHT) == LOW)
+  {
+    send_action(DATA_LIGHT);
+  }
+#if 0 // No support for light-up / light-down
   if (digitalRead(BUTTON_LIGHT_UP) == LOW) action = DATA_FAN_OFF;
   if (digitalRead(BUTTON_LIGHT_DOWN) == LOW) action = DATA_FAN_REVERSE;
-  //if (digitalRead(BUTTON_FAN) == LOW) action = DATA_FAN_3;
-  if (digitalRead(BUTTON_FAN_UP) == LOW) action = DATA_FAN_2;
-  if (digitalRead(BUTTON_FAN_DOWN) == LOW) action = DATA_FAN_1;
+#endif
 
-  if (action != 0)
+#if 0 // ! no pull-up resistor installed
+  if (digitalRead(BUTTON_FAN) == LOW)
   {
-		uint8_t *tx_buf;
-		int i;
-    hunter_data_clear();
-    hunter_data_add_bits(0x0F, 5);
-    hunter_data_add_bits(action, 8);
-    tx_buf = hunter_data_get_buffer();
-
-    digitalWrite(LED_ACTIVITY, HIGH);
-    for (i = 0; i < 16; i++)
+    current_fan_speed = 0;
+    send_action(DATA_FAN_OFF);
+  }
+#endif
+  if ((digitalRead(BUTTON_FAN_UP) == LOW) && (digitalRead(BUTTON_FAN_DOWN) == LOW))
+  {
+    send_action(DATA_FAN_REVERSE);
+  }
+  else
+  {
+    if (digitalRead(BUTTON_FAN_UP) == LOW)
     {
-      digitalWrite(LED_ACTIVITY, ((i%2) ? HIGH : LOW));
-      cc1101_sendData(tx_buf, SIZEOF_HUNTER_DATA_BUFFER);
-      delay(10);
+      current_fan_speed++;
+      if (current_fan_speed > 3) current_fan_speed = 3;
+      refresh_speed(current_fan_speed);
     }
+    if (digitalRead(BUTTON_FAN_DOWN) == LOW)
+    {
+      current_fan_speed--;
+      if (current_fan_speed < 0) current_fan_speed = 0;
+      refresh_speed(current_fan_speed);
+    } 
   }
 }
