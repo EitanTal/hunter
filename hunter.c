@@ -7,12 +7,12 @@
 
 enum
 {
-  BUTTON_1 = PIN_Z0,
-  BUTTON_2 = PIN_Z1,
-  BUTTON_3 = PIN_A0,
-  BUTTON_4 = 3,
-  BUTTON_5 = 5,
-  BUTTON_6 = 9
+  BUTTON_LIGHT = PIN_Z0,
+  BUTTON_LIGHT_UP = PIN_Z1,
+  BUTTON_LIGHT_DOWN = PIN_A0,
+  BUTTON_FAN = 3,
+  BUTTON_FAN_UP = 5,
+  BUTTON_FAN_DOWN = 9
 };
 
 enum
@@ -31,12 +31,12 @@ void setup(void)
 	pinMode(MY_LED_11, OUTPUT);
 	pinMode(MY_LED_2, OUTPUT);
 
-  pinMode(BUTTON_1, INPUT_PULLUP);
-  pinMode(BUTTON_2, INPUT_PULLUP);
-  pinMode(BUTTON_3, INPUT_PULLUP);
-  pinMode(BUTTON_4, INPUT_PULLUP);
-  pinMode(BUTTON_5, INPUT_PULLUP);
-  pinMode(BUTTON_6, INPUT_PULLUP);
+  pinMode(BUTTON_LIGHT, INPUT_PULLUP);
+  pinMode(BUTTON_LIGHT_UP, INPUT_PULLUP);
+  pinMode(BUTTON_LIGHT_DOWN, INPUT_PULLUP);
+  pinMode(BUTTON_FAN, INPUT_PULLUP);
+  pinMode(BUTTON_FAN_UP, INPUT_PULLUP);
+  pinMode(BUTTON_FAN_DOWN, INPUT_PULLUP);
 
   cc1101_init();
 
@@ -50,12 +50,12 @@ void loop(void)
   digitalWrite(LED_ACTIVITY, LOW);
   delay(10); // ! replace with low-power
 
-  if (digitalRead(BUTTON_1) == LOW) action = DATA_LIGHT; 
-  if (digitalRead(BUTTON_2) == LOW) action = DATA_FAN_OFF;
-  if (digitalRead(BUTTON_3) == LOW) action = DATA_FAN_REVERSE;
-  //if (digitalRead(BUTTON_4) == LOW) action = DATA_FAN_3;
-  if (digitalRead(BUTTON_5) == LOW) action = DATA_FAN_2;
-  if (digitalRead(BUTTON_6) == LOW) action = DATA_FAN_1;
+  if (digitalRead(BUTTON_LIGHT) == LOW) action = DATA_LIGHT; 
+  if (digitalRead(BUTTON_LIGHT_UP) == LOW) action = DATA_FAN_OFF;
+  if (digitalRead(BUTTON_LIGHT_DOWN) == LOW) action = DATA_FAN_REVERSE;
+  //if (digitalRead(BUTTON_FAN) == LOW) action = DATA_FAN_3;
+  if (digitalRead(BUTTON_FAN_UP) == LOW) action = DATA_FAN_2;
+  if (digitalRead(BUTTON_FAN_DOWN) == LOW) action = DATA_FAN_1;
 
   if (action != 0)
   {
