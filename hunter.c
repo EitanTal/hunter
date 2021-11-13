@@ -28,6 +28,8 @@ enum
   COMMAND_OK
 };
 
+#define PULL_UP_RESISTOR_PRESENT
+
 ////////////////////////////////////////////////////////
 
 
@@ -73,12 +75,13 @@ void send_action(int action, int ok)
 {
   uint8_t *tx_buf;
   int i;
+  int loop_count = (action == BUTTON_LIGHT) ? 5 : 16; // Light button requires less repetitions, or else it is counted as a double click.
   hunter_data_clear();
   hunter_data_add_bits(0x0F, 5);
   hunter_data_add_bits(action, 8);
   tx_buf = hunter_data_get_buffer();
 
-  for (i = 0; i < 16; i++)
+  for (i = 0; i < loop_count; i++)
   {
     if (ok == COMMAND_OK)
     {
@@ -106,7 +109,6 @@ int speed2action(int8_t new_speed)
   return DATA_FAN_OFF;
 }
 
-
 void loop(void)
 {
   static int8_t current_fan_speed = 0;
@@ -125,12 +127,14 @@ void loop(void)
   if (digitalRead(BUTTON_LIGHT_DOWN) == LOW) action = DATA_FAN_REVERSE;
 #endif
 
-#if 0 // ! no pull-up resistor installed
+#ifdef PULL_UP_RESISTOR_PRESENT
   if (digitalRead(BUTTON_FAN) == LOW)
   {
     current_fan_speed = 0;
-    send_action(DATA_FAN_OFF);
+    send_action(DATA_FAN_OFF, COMMAND_OK);
   }
+#else
+#warning "Special build: No pull-up resistor"
 #endif
   if ((digitalRead(BUTTON_FAN_UP) == LOW) && (digitalRead(BUTTON_FAN_DOWN) == LOW))
   {
