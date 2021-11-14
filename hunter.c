@@ -112,6 +112,7 @@ int speed2action(int8_t new_speed)
 void loop(void)
 {
   static int8_t current_fan_speed = 0;
+  static int8_t saved_fan_speed = 3; // Default to highest speed.
 
   digitalWrite(MY_LED_11, LOW);
   digitalWrite(MY_LED_2, LOW);
@@ -130,8 +131,18 @@ void loop(void)
 #ifdef PULL_UP_RESISTOR_PRESENT
   if (digitalRead(BUTTON_FAN) == LOW)
   {
-    current_fan_speed = 0;
-    send_action(DATA_FAN_OFF, COMMAND_OK);
+    if (current_fan_speed == 0) 
+    {
+      // If the fan is not running, recall the saved fan speed.
+      current_fan_speed = saved_fan_speed;
+    }
+    else
+    {
+      // If the fan is running, store its current speed and stop the fan.
+      saved_fan_speed = current_fan_speed;
+      current_fan_speed = 0;
+    }
+    send_action(speed2action(current_fan_speed), COMMAND_OK);
   }
 #else
 #warning "Special build: No pull-up resistor"
