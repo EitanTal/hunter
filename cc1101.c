@@ -233,6 +233,26 @@ Serial.println(cc1101.readReg(CC1101_MARCSTATE, CC1101_STATUS_REGISTER) & 0x1f);
 #endif
 }
 
+void cc1101_off(void) 
+{
+  {
+    cc1101_Deselect();                    // Deselect CC1101
+    delayMicroseconds(5);
+    cc1101_Select();                      // Select CC1101
+    delayMicroseconds(10);
+    cc1101_Deselect();                    // Deselect CC1101
+    delayMicroseconds(41);
+    cc1101_Select();                      // Select CC1101
+
+    wait_Miso();                          // Wait until MISO goes low
+    //spi_send(CC1101_SIDLE);               // Go to idle
+    spi_send(CC1101_SPWD);               // Off (as soon as Chip select is released)
+    wait_Miso();                          // Wait until MISO goes low
+
+    cc1101_Deselect();                    // Deselect CC1101
+  }
+}
+
 /**
  * sendData
  * 

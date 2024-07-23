@@ -35,7 +35,9 @@ enum
 
 static void WFI(void)
 {
-	__asm("WFI");
+  AWU_IdleModeEnable();
+	//__asm("WFI");
+  __asm("HALT");
 }
 
 static void ENABLE_INTERRUPTS(void)
@@ -64,8 +66,9 @@ void setup(void)
   EXTI_SetPinSensitivity(EXTI_Pin_3, EXTI_Trigger_Falling);   // B3
   EXTI_SetPinSensitivity(EXTI_Pin_4, EXTI_Trigger_Falling);   // C4
 
-  cc1101_init();
-
+  //cc1101_init();
+  AWU_Init(AWU_Timebase_1ms);
+  
   delay(1000);
 
   ENABLE_INTERRUPTS();
@@ -75,11 +78,18 @@ void send_action(int action, int ok)
 {
   uint8_t *tx_buf;
   int i;
-  int loop_count = (action == DATA_LIGHT) ? 5 : 16; // Light button requires less repetitions, or else it is counted as a double click.
+	int j;
+  //int loop_count = (action == DATA_LIGHT) ? 5 : 16; // Light button requires less repetitions, or else it is counted as a double click.
+  int loop_count = 5;
+  int loop_count2 = (action == DATA_LIGHT) ? 1 : 3; // Light button requires less repetitions, or else it is counted as a double click.
   hunter_data_clear();
   hunter_data_add_bits(0x0F, 5);
   hunter_data_add_bits(action, 8);
   tx_buf = hunter_data_get_buffer();
+	
+  for (j = 0; j < loop_count2; j++)
+  {
+	cc1101_init();
 
   for (i = 0; i < loop_count; i++)
   {
@@ -96,6 +106,9 @@ void send_action(int action, int ok)
     cc1101_sendData(tx_buf, SIZEOF_HUNTER_DATA_BUFFER);
     delay(10);
   }
+  }
+	
+	cc1101_off();
 }
 
 int speed2action(int8_t new_speed)
@@ -117,6 +130,7 @@ void loop(void)
   digitalWrite(MY_LED_11, LOW);
   digitalWrite(MY_LED_2, LOW);
   delay(100);
+  cc1101_off(); // turn off again before going to sleep, just in case
 	WFI();
 
   if (digitalRead(BUTTON_LIGHT) == LOW)

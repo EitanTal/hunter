@@ -11,6 +11,13 @@
 void cc1101_init(void);
 
 /**
+ * cc1101_init
+ * 
+ * Initializa CC1101
+ */
+void cc1101_off(void);
+
+/**
  * cc1101_sendData
  * 
  * Send data packet via RF
